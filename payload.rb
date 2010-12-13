@@ -9,11 +9,15 @@ module TicketSharing
       @hash[:uuid]
     end
 
+    def attributes
+      {
+        :uuid => @hash[:uuid]
+      }
+    end
+
     def ticket_attributes
       {
         :description => @hash['description'],
-        :priority    => @hash['priority'],
-        :status      => @hash['status'],
         :subject     => @hash['subject']
       }
     end
