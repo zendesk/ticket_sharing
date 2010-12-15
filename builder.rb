@@ -6,21 +6,24 @@ module TicketSharing
     def initialize(payload, account, partner)
       @payload = payload
       @account = account
-
-      @requester = find_or_create_requester
-      @ticket    = account.tickets.build(payload.ticket_attributes)
-
-      @shared_ticket = account.shared_tickets.build(payload.attributes)
-      @shared_ticket.partner = partner
-      @shared_ticket.ticket = @ticket
+      @partner = partner
     end
 
-    def find_or_create_requester
+    def build_objects
+      @requester = find_or_build_requester
+      @ticket    = @account.tickets.build(@payload.ticket_attributes)
+
+      @shared_ticket = @account.shared_tickets.build(@payload.attributes)
+      @shared_ticket.partner = @partner
+      @shared_ticket.ticket  = @ticket
+    end
+
+    def find_or_build_requester
       identity = UserForeignIdentity.find_by_account_id_and_value(@account.id,
         @payload.requester.uuid)
 
       if !identity
-        user = User.create!({
+        user = User.new({
           :account => @account,
           :name => @payload.requester.name,
           :email => @payload.requester.email
@@ -36,8 +39,11 @@ module TicketSharing
       identity.user
     end
 
-    def save
-      @ticket.save(@requester) && @shared_ticket.save
+    def create
+      ActiveRecord::Base.connection.transaction do
+        build_objects
+        @ticket.save(@requester) && @shared_ticket.save
+      end
     end
 
   end
