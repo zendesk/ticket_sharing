@@ -46,5 +46,13 @@ module TicketSharing
       end
     end
 
+    def update
+      Actor.context(account.id)
+      actor = Actor.find_by_uuid(uuid)
+
+      shared_ticket = @account.shared_tickets.find_by_uuid(@payload.uuid)
+      shared_ticket.ticket.update_attributes(@payload.ticket_attributes)
+    end
+
   end
 end

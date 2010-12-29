@@ -8,6 +8,9 @@ module TicketSharing
     def initialize(hash)
       @hash = hash
       @requester = Requester.new(hash[:requester])
+      @actor = Actor.new(hash['actor'])
+
+      @actor.uuid
     end
 
     def valid?
@@ -16,16 +19,21 @@ module TicketSharing
     end
 
     def attributes
-      {
-        :uuid => @hash[:uuid]
-      }
+      { :uuid => @hash['uuid'] }
     end
 
     def ticket_attributes
-      {
-        :description => @hash['description'],
-        :subject     => @hash['subject']
-      }
+      attributes = {}
+
+      ['subject', 'description'].each do |key|
+        attributes[key.to_sym] = @hash[key] if @hash[key]
+      end
+
+      attributes
+    end
+
+    def uuid
+      @hash['uuid']
     end
 
     private
