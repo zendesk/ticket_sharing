@@ -10,6 +10,11 @@ module TicketSharing
 
     attr_accessor *FIELDS
 
+    def self.serialize(ticket)
+      attributes = { :subject => ticket.subject}
+      Yajl::Encoder.encode(attributes)
+    end
+
     def requested_at_valid?
       begin
 
