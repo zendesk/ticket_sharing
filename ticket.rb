@@ -65,5 +65,9 @@ module TicketSharing
       FIELDS.select { |field| !send(field).nil? }
     end
 
+    def to_json
+      %Q{{"subject":"#{subject}"}}
+    end
+
   end
 end
