@@ -4,7 +4,7 @@ require 'ticket_sharing/json_support'
 module TicketSharing
   class Agreement
 
-    attr_accessor :direction
+    attr_accessor :direction, :remote_url
 
     def initialize(attrs = {})
       self.direction = attrs['direction'] if attrs['direction']
@@ -21,7 +21,9 @@ module TicketSharing
     end
 
     def send_to_partner
-      client = Client.new
+      # Client API subject to change.
+      client = Client.new(remote_url)
+      client.post('/agreements', self.to_json)
     end
 
   end
