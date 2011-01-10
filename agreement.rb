@@ -24,6 +24,7 @@ module TicketSharing
     def send_to_partner
       client = Client.new(remote_url)
       client.post('/agreements', self.to_json)
+      client.success?
     end
 
   end
