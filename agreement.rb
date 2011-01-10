@@ -4,11 +4,12 @@ require 'ticket_sharing/json_support'
 module TicketSharing
   class Agreement
 
-    attr_accessor :direction, :remote_url
+    attr_accessor :direction, :remote_url, :status
 
     def initialize(attrs = {})
       self.direction  = attrs['direction']  if attrs['direction']
       self.remote_url = attrs['remote_url'] if attrs['remote_url']
+      self.status     = attrs['status'] if attrs['status']
     end
 
     def self.parse(json)
