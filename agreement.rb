@@ -4,12 +4,13 @@ require 'ticket_sharing/json_support'
 module TicketSharing
   class Agreement
 
-    attr_accessor :direction, :remote_url, :status
+    FIELDS = [:receiver_url, :sender_url, :status, :uuid]
+    attr_accessor *FIELDS
 
     def initialize(attrs = {})
-      self.direction  = attrs['direction']  if attrs['direction']
-      self.remote_url = attrs['remote_url'] if attrs['remote_url']
-      self.status     = attrs['status'] if attrs['status']
+      FIELDS.each do |attribute|
+        self.send("#{attribute}=", attrs[attribute.to_s])
+      end
     end
 
     def self.parse(json)
@@ -18,14 +19,24 @@ module TicketSharing
     end
 
     def to_json
-      attributes = { :direction => direction }
+      attributes = FIELDS.inject({}) do |attrs, field|
+        attrs[field.to_s] = send(field)
+        attrs
+      end
+
       JsonSupport.encode(attributes)
     end
 
-    def send_to_partner
-      client = Client.new(remote_url)
+    # Maybe something like:
+    #     client.send_agreement(self.to_json)
+    def send_to(url)
+      client = Client.new(url)
       client.post('/agreements', self.to_json)
       client.success?
+    end
+
+    def remote_url
+      receiver_url + '/agreements'
     end
 
   end
