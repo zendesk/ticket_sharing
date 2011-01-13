@@ -33,6 +33,12 @@ module TicketSharing
       client.success?
     end
 
+    def update_partner(url)
+      client = Client.new(url)
+      client.put(relative_url, self.to_json)
+      client.success?
+    end
+
     def relative_url
       '/agreements/' + uuid.to_s
     end
