@@ -27,16 +27,14 @@ module TicketSharing
       JsonSupport.encode(attributes)
     end
 
-    # Maybe something like:
-    #     client.send_agreement(self.to_json)
     def send_to(url)
       client = Client.new(url)
-      client.post('/agreements', self.to_json)
+      client.post(relative_url, self.to_json)
       client.success?
     end
 
-    def remote_url
-      receiver_url + '/agreements'
+    def relative_url
+      '/agreements/' + uuid.to_s
     end
 
   end
