@@ -1,72 +1,23 @@
-require 'date'
-
-require 'ticket_sharing/actor'
+require 'ticket_sharing/json_support'
 
 module TicketSharing
   class Ticket
 
-    FIELDS = [:subject, :description, :requested_at]
-    REQUIRED_FIELDS = [:description, :requested_at]
-
+    FIELDS = [:subject, :description, :requested_at, :status]
     attr_accessor *FIELDS
 
-    def self.serialize(ticket)
-      attributes = { :subject => ticket.subject}
-      Yajl::Encoder.encode(attributes)
-    end
-
-    def requested_at_valid?
-      begin
-
-        case requested_at
-        when nil then false
-        when Time, DateTime then true
-        else DateTime.parse(requested_at.to_s)
-        end
-
-      rescue ArgumentError
+    def initialize(attrs = {})
+      FIELDS.each do |attribute|
+        self.send("#{attribute}=", attrs[attribute.to_s])
       end
     end
 
-    def subject_valid?
-      !subject.nil?
-    end
-
-    def description_valid?
-      !description.nil?
-    end
-
-    def create
-      return unless valid_for_create?
-    end
-
-    def valid_for_create?
-      required_fields_are_given? &&
-      given_fields_are_valid?
-    end
-
-    def required_fields_are_given?
-      REQUIRED_FIELDS.all? { |field| !send(field).nil? }
-    end
-
-    def update
-      return unless valid_for_update?
-    end
-
-    def valid_for_update?
-      given_fields_are_valid?
-    end
-
-    def given_fields_are_valid?
-      given_fields.all? { |field| send("#{field}_valid?") }
-    end
-
-    def given_fields
-      FIELDS.select { |field| !send(field).nil? }
+    def self.parse(json)
+      attributes = JsonSupport.decode(json)
+      ticket = new(attributes)
     end
 
     def to_json
-      %Q{{"subject":"#{subject}"}}
     end
 
   end
