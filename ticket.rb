@@ -1,9 +1,10 @@
+require 'ticket_sharing/client'
 require 'ticket_sharing/json_support'
 
 module TicketSharing
   class Ticket
 
-    FIELDS = [:subject, :description, :requested_at, :status]
+    FIELDS = [:uuid, :subject, :description, :requested_at, :status]
     attr_accessor *FIELDS
 
     def initialize(attrs = {})
@@ -18,6 +19,22 @@ module TicketSharing
     end
 
     def to_json
+      attributes = FIELDS.inject({}) do |attrs, field|
+        attrs[field.to_s] = send(field)
+        attrs
+      end
+
+      JsonSupport.encode(attributes)
+    end
+
+    def send_to(url)
+      client = Client.new(url)
+      client.post(relative_url, self.to_json)
+      client.success?
+    end
+
+    def relative_url
+      "/tickets/#{uuid}"
     end
 
   end
