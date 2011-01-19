@@ -4,7 +4,7 @@ require 'ticket_sharing/json_support'
 module TicketSharing
   class Agreement
 
-    FIELDS = [:receiver_url, :sender_url, :status, :uuid]
+    FIELDS = [:receiver_url, :sender_url, :status, :uuid, :access_key]
     attr_accessor *FIELDS
 
     def initialize(attrs = {})
@@ -34,7 +34,7 @@ module TicketSharing
     end
 
     def update_partner(url)
-      client = Client.new(url)
+      client = Client.new(url, "#{uuid}:#{access_key}")
       client.put(relative_url, self.to_json)
       client.success?
     end
