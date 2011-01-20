@@ -1,4 +1,5 @@
 require 'ticket_sharing/client'
+require 'ticket_sharing/agreement'
 require 'ticket_sharing/json_support'
 
 module TicketSharing
@@ -6,6 +7,8 @@ module TicketSharing
 
     FIELDS = [:uuid, :subject, :description, :requested_at, :status]
     attr_accessor *FIELDS
+
+    attr_accessor :agreement
 
     def initialize(attrs = {})
       FIELDS.each do |attribute|
@@ -28,7 +31,9 @@ module TicketSharing
     end
 
     def send_to(url)
-      client = Client.new(url)
+      raise "Agreement not present" unless agreement
+
+      client = Client.new(url, agreement.authentication_token)
       client.post(relative_url, self.to_json)
       client.success?
     end
