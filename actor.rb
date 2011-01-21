@@ -1,15 +1,7 @@
+require 'ticket_sharing/base'
+
 module TicketSharing
-  class Actor
-
-    attr_accessor :uuid
-
-    def initialize(hash = {})
-      @uuid = hash['uuid']
-    end
-
-    def valid?
-      uuid
-    end
-
+  class Actor < Base
+    fields :uuid, :name, :email
   end
 end

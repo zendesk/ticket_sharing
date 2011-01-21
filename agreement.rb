@@ -1,30 +1,14 @@
+require 'ticket_sharing/base'
 require 'ticket_sharing/client'
-require 'ticket_sharing/json_support'
 
 module TicketSharing
-  class Agreement
+  class Agreement < Base
 
-    FIELDS = [:receiver_url, :sender_url, :status, :uuid, :access_key]
-    attr_accessor *FIELDS
-
-    def initialize(attrs = {})
-      FIELDS.each do |attribute|
-        self.send("#{attribute}=", attrs[attribute.to_s])
-      end
-    end
+    fields :receiver_url, :sender_url, :status, :uuid, :access_key
 
     def self.parse(json)
       attributes = JsonSupport.decode(json)
       agreement = new(attributes)
-    end
-
-    def to_json
-      attributes = FIELDS.inject({}) do |attrs, field|
-        attrs[field.to_s] = send(field)
-        attrs
-      end
-
-      JsonSupport.encode(attributes)
     end
 
     def send_to(url)
