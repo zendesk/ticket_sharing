@@ -1,9 +1,9 @@
-module TicketSharing
-  class Comment
+require 'ticket_sharing/base'
 
-    def initialize(hash)
-      @hash = hash
-    end
+module TicketSharing
+  class Comment < Base
+
+    fields :uuid, :author, :body, :created_at
 
   end
 end
