@@ -21,6 +21,10 @@ module TicketSharing
       Net::HTTPSuccess === response
     end
 
+    def code
+      response.code.to_i
+    end
+
     private
       def send_request(request_class, path, body)
         uri = URI.parse(@base_url + path)
