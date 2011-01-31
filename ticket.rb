@@ -1,12 +1,13 @@
 require 'ticket_sharing/base'
 require 'ticket_sharing/client'
 require 'ticket_sharing/actor'
+require 'ticket_sharing/comment'
 require 'ticket_sharing/agreement'
 
 module TicketSharing
   class Ticket < Base
 
-    fields :uuid, :subject, :description, :requested_at, :status, :requester
+    fields :uuid, :subject, :description, :requested_at, :status, :requester, :comments
 
     attr_accessor :agreement
 
@@ -18,7 +19,15 @@ module TicketSharing
         ticket.requester = Actor.new(ticket.requester)
       end
 
+      if ticket.comments
+        ticket.comments = ticket.comments.map { |comment| Comment.new(comment) }
+      end
+
       ticket
+    end
+
+    def comments
+      @comments ||= []
     end
 
     def send_to(url)
