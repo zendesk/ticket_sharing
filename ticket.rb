@@ -7,7 +7,7 @@ require 'ticket_sharing/agreement'
 module TicketSharing
   class Ticket < Base
 
-    fields :uuid, :subject, :description, :requested_at, :status, :requester, :comments
+    fields :uuid, :subject, :requested_at, :status, :requester, :comments
 
     attr_accessor :agreement
 
