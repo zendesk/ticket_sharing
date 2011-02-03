@@ -18,7 +18,7 @@ module TicketSharing
 
     def initialize(attrs = {})
       field_list.each do |attribute|
-        self.send("#{attribute}=", attrs[attribute.to_s])
+        self.send("#{attribute}=", attrs[attribute.to_s]) if attrs.has_key?(attribute.to_s)
       end
     end
 
