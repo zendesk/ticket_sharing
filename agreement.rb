@@ -4,7 +4,7 @@ require 'ticket_sharing/client'
 module TicketSharing
   class Agreement < Base
 
-    fields :receiver_url, :sender_url, :status, :uuid, :access_key
+    fields :receiver_url, :sender_url, :status, :uuid, :access_key, :name
 
     def self.parse(json)
       attributes = JsonSupport.decode(json)
