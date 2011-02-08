@@ -20,5 +20,10 @@ module TicketSharing
       JsonSupport.encode(@value ? @value.strftime('%Y-%m-%d %H:%M:%S %z') : nil)
     end
 
+    # Support method to play well with active record
+    def to_time
+      value
+    end
+
   end
 end
