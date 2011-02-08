@@ -1,10 +1,11 @@
 require 'ticket_sharing/base'
 require 'ticket_sharing/actor'
+require 'ticket_sharing/time'
 
 module TicketSharing
   class Comment < Base
 
-    fields :uuid, :author, :body, :created_at, :public
+    fields :uuid, :author, :body, :authored_at, :public
 
     def initialize(params={})
       self.public = true
@@ -19,6 +20,10 @@ module TicketSharing
     def self.parse(json)
       attributes = JsonSupport.decode(json)
       new(attributes)
+    end
+
+    def authored_at=(value)
+      @authored_at = TicketSharing::Time.new(value)
     end
 
     def public?
