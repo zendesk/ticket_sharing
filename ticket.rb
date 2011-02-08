@@ -3,6 +3,7 @@ require 'ticket_sharing/client'
 require 'ticket_sharing/actor'
 require 'ticket_sharing/comment'
 require 'ticket_sharing/agreement'
+require 'ticket_sharing/time'
 
 module TicketSharing
   class Ticket < Base
@@ -24,6 +25,10 @@ module TicketSharing
       end
 
       ticket
+    end
+
+    def requested_at=(val)
+      @requested_at = TicketSharing::Time.new(val)
     end
 
     def comments
