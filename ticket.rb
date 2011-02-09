@@ -21,6 +21,10 @@ module TicketSharing
         ticket.requester = Actor.new(ticket.requester)
       end
 
+      if ticket.current_actor
+        ticket.current_actor = Actor.new(ticket.current_actor)
+      end
+
       if ticket.comments
         ticket.comments = ticket.comments.map { |comment| Comment.new(comment) }
       end
@@ -28,6 +32,7 @@ module TicketSharing
       ticket
     end
 
+    # TSTODO make all of these setters behave this way, not like they do in parse
     def requested_at=(val)
       @requested_at = TicketSharing::Time.new(val)
     end
