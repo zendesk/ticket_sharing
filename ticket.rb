@@ -8,7 +8,8 @@ require 'ticket_sharing/time'
 module TicketSharing
   class Ticket < Base
 
-    fields :uuid, :subject, :requested_at, :status, :requester, :comments
+    fields :uuid, :subject, :requested_at, :status, :requester, :comments,
+      :current_actor
 
     attr_accessor :agreement
 
