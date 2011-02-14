@@ -1,5 +1,6 @@
 require 'ticket_sharing/base'
 require 'ticket_sharing/client'
+require 'ticket_sharing/actor'
 
 module TicketSharing
   class Agreement < Base
@@ -10,6 +11,10 @@ module TicketSharing
     def self.parse(json)
       attributes = JsonSupport.decode(json)
       agreement = new(attributes)
+      if agreement.current_actor
+        agreement.current_actor = TicketSharing::Actor.new(agreement.current_actor)
+      end
+      agreement
     end
 
     def send_to(url)
