@@ -1,3 +1,4 @@
+require 'ticket_sharing/error'
 module TicketSharing
   class Client
 
@@ -34,6 +35,13 @@ module TicketSharing
 
         @response = Net::HTTP.new(uri.host, uri.port).start do |http|
           http.request(request)
+        end
+
+        case response
+        when Net::HTTPSuccess
+          response
+        else
+          raise TicketSharing::Error.new(%Q{#{response.code} "#{response.message}"\n\n#{response.body}})
         end
       end
 
