@@ -33,7 +33,10 @@ module TicketSharing
         request['X-Ticket-Sharing-Token'] = @credentials if @credentials
         request.body = body
 
-        @response = Net::HTTP.new(uri.host, uri.port).start do |http|
+        http = Net::HTTP.new(uri.host, uri.port)
+        http.use_ssl = true if uri.scheme == 'https'
+
+        @response = http.start do |http|
           http.request(request)
         end
 
