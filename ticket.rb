@@ -9,7 +9,7 @@ module TicketSharing
   class Ticket < Base
 
     fields :uuid, :subject, :requested_at, :status, :requester, :comments,
-      :current_actor
+      :current_actor, :tags
 
     attr_accessor :agreement
 
