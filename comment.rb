@@ -1,11 +1,12 @@
 require 'ticket_sharing/base'
 require 'ticket_sharing/actor'
 require 'ticket_sharing/time'
+require 'ticket_sharing/attachment'
 
 module TicketSharing
   class Comment < Base
 
-    fields :uuid, :author, :body, :authored_at, :public
+    fields :uuid, :author, :body, :authored_at, :public, :attachments
 
     def initialize(params={})
       self.public = true
