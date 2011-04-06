@@ -27,6 +27,12 @@ module TicketSharing
       @authored_at = TicketSharing::Time.new(value)
     end
 
+    def attachments=(attachments)
+      @attachments = attachments.map do |attachment|
+        attachment.is_a?(Attachment) ? attachment : Attachment.new(attachment)
+      end
+    end
+
     def public?
       public
     end
