@@ -28,7 +28,7 @@ module TicketSharing
     end
 
     def attachments=(attachments)
-      @attachments = attachments.map do |attachment|
+      @attachments = attachments && attachments.map do |attachment|
         attachment.is_a?(Attachment) ? attachment : Attachment.new(attachment)
       end
     end
