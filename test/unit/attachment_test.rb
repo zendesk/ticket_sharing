@@ -1,7 +1,7 @@
 require 'test_helper'
 require 'ticket_sharing/attachment'
 
-class TicketSharing::AttachmentTest < Test::Unit::TestCase
+class TicketSharing::AttachmentTest < MiniTest::Unit::TestCase
 
   def test_should_initialize
     attributes = {

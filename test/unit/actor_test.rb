@@ -1,7 +1,7 @@
 require 'test_helper'
 require 'ticket_sharing/actor'
 
-class ActorTest < Test::Unit::TestCase
+class ActorTest < MiniTest::Unit::TestCase
 
   def test_should_initialize_from_a_hash
     hash = { 'uuid' => 'ba90d6', 'role' => 'staff' }

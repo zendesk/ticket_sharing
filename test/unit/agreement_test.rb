@@ -1,7 +1,7 @@
 require 'test_helper'
 require 'ticket_sharing/agreement'
 
-class TicketSharing::AgreementTest < Test::Unit::TestCase
+class TicketSharing::AgreementTest < MiniTest::Unit::TestCase
 
   def test_should_initialize_with_attributes
     attributes = {
@@ -102,7 +102,7 @@ class TicketSharing::AgreementTest < Test::Unit::TestCase
       'http://example.com/sharing/agreements/5ad614f4',
       :body => '', :status => [400, "Bad Request"])
 
-    assert_raise(TicketSharing::Error) do
+    assert_raises(TicketSharing::Error) do
       agreement.send_to(attributes['receiver_url'])
     end
   end
@@ -136,7 +136,7 @@ class TicketSharing::AgreementTest < Test::Unit::TestCase
     })
 
     agreement = TicketSharing::Agreement.parse(json)
-    assert_not_nil(agreement.current_actor)
+    assert !agreement.current_actor.nil?
     assert_equal('1234', agreement.current_actor.uuid)
     assert_equal('Remote Dude', agreement.current_actor.name)
   end

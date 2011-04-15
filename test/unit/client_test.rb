@@ -1,7 +1,7 @@
 require 'test_helper'
 require 'ticket_sharing/client'
 
-class TicketSharing::ClientTest < Test::Unit::TestCase
+class TicketSharing::ClientTest < MiniTest::Unit::TestCase
 
   def setup
     @base_url = 'http://example.com/sharing'
@@ -22,7 +22,7 @@ class TicketSharing::ClientTest < Test::Unit::TestCase
     client = do_request(:post)
     assert client.success?
     assert_equal(200, client.code)
-    assert_not_nil(client.response)
+    assert !client.response.nil?
     assert_equal('POST', FakeWeb.last_request.method)
   end
 
@@ -64,7 +64,7 @@ class TicketSharing::ClientTest < Test::Unit::TestCase
     FakeWeb.register_uri(:post, 'http://example.com/sharing/', :body => '',
       :status => '302', :location => 'http://example.com/sharing/')
 
-    assert_raise(TicketSharing::TooManyRedirects) do
+    assert_raises(TicketSharing::TooManyRedirects) do
       response = client.post('/', '')
     end
   end

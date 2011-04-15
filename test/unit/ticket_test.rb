@@ -1,7 +1,7 @@
 require 'test_helper'
 require 'ticket_sharing/ticket'
 
-class TicketSharing::TicketTest < Test::Unit::TestCase
+class TicketSharing::TicketTest < MiniTest::Unit::TestCase
 
   def test_should_initialize
     attributes = valid_ticket_attributes
@@ -125,7 +125,7 @@ class TicketSharing::TicketTest < Test::Unit::TestCase
     assert ticket.send_to('http://example.com/sharing')
 
     assert request = FakeWeb.last_request
-    assert_not_nil(request['X-Ticket-Sharing-Token'])
+    assert !request['X-Ticket-Sharing-Token'].nil?
     assert_equal(ticket.agreement.authentication_token,
       request['X-Ticket-Sharing-Token'])
   end

@@ -1,6 +1,4 @@
-require 'rubygems'
+require 'minitest/autorun'
 require 'fakeweb'
-
-require 'test/unit'
 
 FakeWeb.allow_net_connect = false

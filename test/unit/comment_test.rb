@@ -1,7 +1,7 @@
 require 'test_helper'
 require 'ticket_sharing/comment'
 
-class TicketSharing::CommentTest < Test::Unit::TestCase
+class TicketSharing::CommentTest < MiniTest::Unit::TestCase
 
   def test_should_initialize_from_a_hash
     hash = { 'uuid' => '63f127' }
