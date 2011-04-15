@@ -3,7 +3,7 @@ require 'ticket_sharing/base'
 module TicketSharing
   class Attachment < Base
 
-    fields :url, :filename
+    fields :url, :filename, :content_type
 
   end
 end
