@@ -10,7 +10,7 @@ module TicketSharing
       @uri = URI.parse(uri)
       @request_class = request_class
       @body = body
-      @raw_request = @request_class.new(@uri.path)
+      @raw_request = new_raw_request
     end
 
     def set_header(key, value)
@@ -34,11 +34,18 @@ module TicketSharing
       end
 
       @uri = URI.parse(@raw_response['Location'])
-      @raw_request = @request_class.new(@uri.path)
+      @raw_request = new_raw_request
 
       self.send!
 
       @redirects += 1
+    end
+
+    def new_raw_request
+      raw_request = @request_class.new(@uri.path)
+      raw_request['Accept'] = 'application/json'
+
+      raw_request
     end
 
   end
