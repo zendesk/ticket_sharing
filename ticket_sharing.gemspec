@@ -2,10 +2,10 @@
 
 Gem::Specification.new do |s|
   s.name = 'ticket_sharing'
-  s.version = '0.1'
+  s.version = '0.2'
 
   s.authors = ['Josh Lubaway']
-  s.date = '2011-04-06'
+  s.date = '2011-04-19'
   s.email = 'josh@zendesk.com'
   s.extra_rdoc_files = ['Readme.md']
   s.files = Dir['lib/**/*']
