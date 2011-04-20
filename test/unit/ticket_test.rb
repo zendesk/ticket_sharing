@@ -15,7 +15,8 @@ class TicketSharing::TicketTest < MiniTest::Unit::TestCase
 
   def test_should_parse_json
     attributes = valid_ticket_attributes({
-      'tags' => ['foo', 'bar']
+      'tags' => ['foo', 'bar'],
+      'original_id' => '12'
     })
 
     json = Yajl::Encoder.encode(attributes)
@@ -25,13 +26,15 @@ class TicketSharing::TicketTest < MiniTest::Unit::TestCase
     assert_equal(attributes['subject'], ticket.subject)
     assert_equal(attributes['status'], ticket.status)
     assert_equal(attributes['tags'], ticket.tags)
+    assert_equal(attributes['original_id'], ticket.original_id)
   end
 
   def test_should_serialize_to_json
     requested_at = Time.now
     ticket = TicketSharing::Ticket.new(valid_ticket_attributes({
       'requested_at' => requested_at,
-      'tags' => ['foo', 'bar']
+      'tags' => ['foo', 'bar'],
+      'original_id' => '12'
     }))
     json = ticket.to_json
 
@@ -41,6 +44,7 @@ class TicketSharing::TicketTest < MiniTest::Unit::TestCase
     assert_equal(ticket.uuid, parsed_from_json['uuid'])
     assert_equal(requested_at.strftime('%Y-%m-%d %H:%M:%S %z'), parsed_from_json['requested_at'])
     assert_equal(ticket.tags, parsed_from_json['tags'])
+    assert_equal(ticket.original_id, parsed_from_json['original_id'])
   end
 
   def test_should_serialize_comments_to_json
