@@ -117,6 +117,24 @@ class TicketSharing::TicketTest < MiniTest::Unit::TestCase
     assert_equal('Actor One', ticket.comments[1].author.name)
   end
 
+  def test_should_serialize_custom_fields
+    custom_fields = {
+      'foo' => 'bar',
+      'one' => 2,
+      'three' => [4, 5, 6],
+      'hash' => { 'key' => 'value' }
+    }
+
+    ticket = TicketSharing::Ticket.new('custom_fields' => custom_fields)
+    json = ticket.to_json
+    parsed_ticket = TicketSharing::Ticket.parse(json)
+
+    assert_equal('bar', parsed_ticket.custom_fields['foo'])
+    assert_equal(2, parsed_ticket.custom_fields['one'])
+    assert_equal([4, 5, 6], parsed_ticket.custom_fields['three'])
+    assert_equal({'key' => 'value'}, parsed_ticket.custom_fields['hash'])
+  end
+
   def test_should_send_to_partner
     ticket = TicketSharing::Ticket.new(valid_ticket_attributes)
     ticket.agreement = TicketSharing::Agreement.new({
