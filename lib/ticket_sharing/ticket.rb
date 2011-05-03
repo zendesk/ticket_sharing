@@ -55,6 +55,12 @@ module TicketSharing
       client.success?
     end
 
+    def unshare(base_url)
+      client = Client.new(base_url, agreement.authentication_token)
+      client.delete(relative_url)
+      client.success?
+    end
+
     def relative_url
       "/tickets/#{uuid}"
     end
