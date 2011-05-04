@@ -19,6 +19,10 @@ module TicketSharing
       send_request(Net::HTTP::Put, path, body)
     end
 
+    def delete(path)
+      send_request(Net::HTTP::Delete, path, '')
+    end
+
     def success?
       raise "No call made to determine success" unless @success
       @success

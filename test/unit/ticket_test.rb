@@ -166,6 +166,22 @@ class TicketSharing::TicketTest < MiniTest::Unit::TestCase
     assert_equal('a1:key', request['X-Ticket-Sharing-Token'])
   end
 
+  def test_should_unshare
+    FakeWeb.last_request = nil
+    FakeWeb.register_uri(:delete, 'http://example.com/sharing/tickets/t1', :body => '')
+
+    ticket = TicketSharing::Ticket.new(valid_ticket_attributes('uuid' => 't1'))
+    ticket.agreement = TicketSharing::Agreement.new({
+      'uuid' => 'a1', 'access_key' => 'key'
+    })
+
+    assert ticket.unshare('http://example.com/sharing')
+
+    assert request = FakeWeb.last_request
+    assert_equal('/sharing/tickets/t1', request.path)
+    assert_equal('a1:key', request['X-Ticket-Sharing-Token'])
+  end
+
   def test_should_set_requested_at_from_string
     ticket = TicketSharing::Ticket.new('requested_at' => '2011-01-02 13:01:01 -0500')
     assert_equal(Time.parse('2011-01-02 13:01:01 -0500'), ticket.requested_at.to_time)

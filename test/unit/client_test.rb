@@ -110,4 +110,17 @@ class TicketSharing::ClientTest < MiniTest::Unit::TestCase
     assert_equal('the_token', FakeWeb.last_request['X-Ticket-Sharing-Token'])
   end
 
+  def test_a_successful_delete
+    FakeWeb.last_request = nil
+    FakeWeb.register_uri(:delete, 'http://example.com/sharing/tickets/t1',
+      :body => '')
+
+    client = TicketSharing::Client.new('http://example.com/sharing/')
+    client.delete('tickets/t1')
+
+    assert response = FakeWeb.last_request
+    assert_equal('/sharing/tickets/t1', response.path)
+    assert_equal('DELETE', response.method)
+  end
+
 end
