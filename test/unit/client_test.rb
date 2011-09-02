@@ -91,6 +91,16 @@ class TicketSharing::ClientTest < MiniTest::Unit::TestCase
     assert !client.success?
   end
 
+  def test_a_failing_post_with_410_response
+    the_body = "{'error': 'the error'}"
+    FakeWeb.register_uri(:post, @base_url + @path,
+      :body => the_body, :status => [410, 'Gone'])
+
+    client = do_request(:post)
+    assert !client.success?
+    assert_equal("410", client.response.code)
+  end
+
   def test_a_failing_post_with_a_5xx_response
     the_body = "{'error': 'the error'}"
     FakeWeb.register_uri(:post, @base_url + @path,
