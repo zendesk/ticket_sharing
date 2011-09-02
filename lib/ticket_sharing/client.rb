@@ -52,6 +52,8 @@ module TicketSharing
         when Net::HTTPMovedPermanently, Net::HTTPFound
           request.follow_redirect!
           handle_response(request)
+        when Net::HTTPServerError
+          @success = false
         else
           raise TicketSharing::Error.new(%Q{#{response.code} "#{response.message}"\n\n#{response.body}})
         end
