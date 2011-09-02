@@ -19,14 +19,16 @@ module TicketSharing
 
     def send_to(url)
       client = Client.new(url)
-      client.post(relative_url, self.to_json)
-      client.success?
+      response = client.post(relative_url, self.to_json)
+
+      response.code.to_i
     end
 
     def update_partner(url)
       client = Client.new(url, authentication_token)
-      client.put(relative_url, self.to_json)
-      client.success?
+      response = client.put(relative_url, self.to_json)
+
+      response.code.to_i
     end
 
     def relative_url
