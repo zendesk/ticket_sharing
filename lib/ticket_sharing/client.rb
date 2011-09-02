@@ -24,7 +24,6 @@ module TicketSharing
     end
 
     def success?
-      raise "No call made to determine success" unless @success
       @success
     end
 
