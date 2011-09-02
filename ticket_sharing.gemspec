@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = 'ticket_sharing'
-  s.version = '0.5.1'
+  s.version = '0.5.2'
 
   s.authors = ['Josh Lubaway']
   s.date = '2011-06-07'
