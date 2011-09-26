@@ -49,7 +49,7 @@ module TicketSharing
         when Net::HTTPSuccess
           @success = true
           response
-        when Net::HTTPMovedPermanently, Net::HTTPFound
+        when Net::HTTPMovedPermanently, Net::HTTPFound, Net::HTTPRedirection
           request.follow_redirect!
           handle_response(request)
         when Net::HTTPNotFound, Net::HTTPGone, Net::HTTPServerError
