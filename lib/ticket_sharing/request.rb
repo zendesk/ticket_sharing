@@ -1,7 +1,7 @@
 module TicketSharing
   class Request
 
-    attr_reader :raw_response
+    attr_reader :raw_response, :raw_request
 
     MAX_REDIRECTS = 1
 
@@ -32,10 +32,10 @@ module TicketSharing
       if @redirects >= MAX_REDIRECTS
         raise TicketSharing::TooManyRedirects
       end
-
+      token = @raw_request['X-Ticket-Sharing-Token']
       @uri = URI.parse(@raw_response['Location'])
       @raw_request = new_raw_request
-
+      @raw_request['X-Ticket-Sharing-Token'] = token if token
       self.send!
 
       @redirects += 1
