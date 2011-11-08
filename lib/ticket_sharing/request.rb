@@ -44,6 +44,7 @@ module TicketSharing
     def new_raw_request
       raw_request = @request_class.new(@uri.path)
       raw_request['Accept'] = 'application/json'
+      raw_request['Content-Type'] = 'application/json'
 
       if @raw_request && token = @raw_request['X-Ticket-Sharing-Token']
         raw_request['X-Ticket-Sharing-Token'] = token

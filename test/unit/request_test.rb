@@ -11,6 +11,15 @@ class TicketSharing::RequestTest < MiniTest::Unit::TestCase
     assert_equal('application/json', raw_request['Accept'])
   end
 
+  def test_a_new_raw_request_should_set_content_type_to_json
+    request = TicketSharing::Request.new(Net::HTTP::Post,
+      'http://example.com/sharing', 'body')
+
+    raw_request = request.new_raw_request
+    assert_equal('application/json', raw_request['Content-Type'])
+  end
+  
+
   def test_a_new_raw_request_should_retain_the_ticket_sharing_token
     request = TicketSharing::Request.new(Net::HTTP::Post,
       'http://example.com/sharing', 'body')
