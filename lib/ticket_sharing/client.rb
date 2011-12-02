@@ -55,6 +55,9 @@ module TicketSharing
         when Net::HTTPNotFound, Net::HTTPGone, Net::HTTPServerError
           @success = false
           response
+        when Net::HTTPMethodNotAllowed
+          @success = false
+          response
         else
           raise TicketSharing::Error.new(%Q{#{response.code} "#{response.message}"\n\n#{response.body}})
         end
