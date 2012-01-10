@@ -9,6 +9,7 @@ class TicketSharing::AgreementTest < MiniTest::Unit::TestCase
       'sender_url' => 'http://example.net/partners',
       'status' => 'pending',
       'sync_tags' => true,
+      'sync_custom_fields' => true,
       'allows_public_comments' => true
     }
 
@@ -18,6 +19,7 @@ class TicketSharing::AgreementTest < MiniTest::Unit::TestCase
     assert_equal(attributes['sender_url'], agreement.sender_url)
     assert_equal(attributes['status'], agreement.status)
     assert_equal(attributes['sync_tags'], agreement.sync_tags)
+    assert_equal(attributes['sync_custom_fields'], agreement.sync_custom_fields)
     assert_equal(attributes['allows_public_comments'], agreement.allows_public_comments)
   end
 

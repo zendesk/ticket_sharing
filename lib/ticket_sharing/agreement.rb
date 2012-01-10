@@ -6,7 +6,7 @@ module TicketSharing
   class Agreement < Base
 
     fields :receiver_url, :sender_url, :status, :uuid, :access_key, :name,
-      :current_actor, :sync_tags, :allows_public_comments
+      :current_actor, :sync_tags, :sync_custom_fields, :allows_public_comments
 
     def self.parse(json)
       attributes = JsonSupport.decode(json)
