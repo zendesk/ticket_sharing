@@ -3,7 +3,8 @@ module TicketSharing
 
     attr_reader :raw_response
 
-    MAX_REDIRECTS = 1
+    # this should very rarely have to go above 2, and definitely never any higher than 5
+    MAX_REDIRECTS = 2
 
     def initialize(request_class, uri, body)
       @redirects = 0
