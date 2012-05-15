@@ -6,7 +6,7 @@ require 'ticket_sharing/attachment'
 module TicketSharing
   class Comment < Base
 
-    fields :uuid, :author, :body, :authored_at, :public, :attachments
+    fields :uuid, :author, :body, :authored_at, :public, :attachments, :custom_fields
 
     def initialize(params={})
       self.public = true
