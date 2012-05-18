@@ -87,6 +87,45 @@ class TicketSharing::CommentTest < MiniTest::Unit::TestCase
     assert_equal(now, comment.authored_at.to_time)
   end
 
+  def test_should_serialize_custom_fields
+    custom_fields = {
+      'foo' => 'bar',
+      'one' => 2,
+      'three' => [4, 5, 6],
+      'hash' => { 'key' => 'value' },
+      'array' => [{'id' => 'abc', :url => "http://foo.bar/resources/1"},
+                  {'id' => 'efg', :url => "http://foo.bar/resources/2"}]
+    }
+
+    comment = TicketSharing::Comment.new('custom_fields' => custom_fields)
+
+    json = comment.to_json
+    # Convert the json back to a hash just for easier assertions
+    hash = TicketSharing::JsonSupport.decode(json)
+
+    assert_equal('bar', hash['custom_fields']['foo'])
+    assert_equal(2, hash['custom_fields']['one'])
+    assert_equal([4, 5, 6], hash['custom_fields']['three'])
+    assert_equal({'key' => 'value'}, hash['custom_fields']['hash'])
+    assert_equal("http://foo.bar/resources/1", hash['custom_fields']['array'].first['url'])
+    assert_equal("efg", hash['custom_fields']['array'].last['id'])
+  end
+
+  def test_should_parse_custom_fields_from_json
+    hash = { 'custom_fields' =>
+             { 'three' => [4, 5, 6],
+               'array' => [{'id' => 'abc', :url => "http://foo.bar/resources/1"},
+                           {'id' => 'efg', :url => "http://foo.bar/resources/2"}]
+             }
+           }
+    json = TicketSharing::JsonSupport.encode(hash)
+
+    parsed_comment = TicketSharing::Comment.parse(json)
+
+    assert_equal("http://foo.bar/resources/1", parsed_comment.custom_fields['array'].first['url'])
+    assert_equal([4, 5, 6], parsed_comment.custom_fields['three'])
+  end
+
   def valid_comment_attributes
     {
       'uuid' => 'comment123',
