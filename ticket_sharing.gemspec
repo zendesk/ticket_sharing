@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = 'ticket_sharing'
-  s.version = '0.6.6'
+  s.version = '0.6.7'
 
   s.authors = ['Josh Lubaway']
   s.email = 'josh@zendesk.com'
