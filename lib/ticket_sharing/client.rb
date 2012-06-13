@@ -45,17 +45,17 @@ module TicketSharing
         @response = request.raw_response
         @code = response.code.to_i
 
-        case response
-        when Net::HTTPSuccess
+        case @code
+        when (200..299)
           @success = true
           response
-        when Net::HTTPRedirection
+        when (300..399)
           request.follow_redirect!
           handle_response(request)
-        when Net::HTTPNotFound, Net::HTTPGone, Net::HTTPServerError
+        when 404, 405, 410, 422
           @success = false
           response
-        when Net::HTTPMethodNotAllowed
+        when (500..599)
           @success = false
           response
         else
