@@ -110,6 +110,16 @@ class TicketSharing::ClientTest < MiniTest::Unit::TestCase
     assert_equal("410", client.response.code)
   end
 
+  def test_a_failing_post_with_422_response
+    the_body = "{'error': 'the error'}"
+    FakeWeb.register_uri(:post, @base_url + @path,
+      :body => the_body, :status => [422, 'Unprocessable Entity'])
+
+    client = do_request(:post)
+    assert !client.success?
+    assert_equal("422", client.response.code)
+  end
+
   def test_a_failing_post_with_a_5xx_response
     the_body = "{'error': 'the error'}"
     FakeWeb.register_uri(:post, @base_url + @path,
