@@ -34,7 +34,7 @@ module TicketSharing
     end
 
     def public?
-      public
+      self.public
     end
 
   end
