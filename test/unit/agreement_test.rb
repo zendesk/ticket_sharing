@@ -33,7 +33,7 @@ class TicketSharing::AgreementTest < MiniTest::Unit::TestCase
   end
 
   def test_should_marshal_from_json
-    json = Yajl::Encoder.encode({
+    json = TicketSharing::JsonSupport.encode({
       'name' => 'Organization Foo',
       'uuid' => 'the_uuid',
       'access_key' => 'the_access_key',
@@ -130,7 +130,7 @@ class TicketSharing::AgreementTest < MiniTest::Unit::TestCase
   end
 
   def test_should_deserialize_current_actor
-    json = Yajl::Encoder.encode({
+    json = TicketSharing::JsonSupport.encode({
       'current_actor' => {
         'uuid' => '1234',
         'name' => 'Remote Dude'

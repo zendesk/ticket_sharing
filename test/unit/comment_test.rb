@@ -34,7 +34,7 @@ class TicketSharing::CommentTest < MiniTest::Unit::TestCase
 
   def test_should_parse_from_json
     attributes = valid_comment_attributes
-    json = Yajl::Encoder.encode(attributes)
+    json = TicketSharing::JsonSupport.encode(attributes)
 
     comment = TicketSharing::Comment.parse(json)
     assert_equal(attributes['uuid'], comment.uuid)
@@ -49,7 +49,7 @@ class TicketSharing::CommentTest < MiniTest::Unit::TestCase
         'name' => 'The Actor'
       }
 
-    json = Yajl::Encoder.encode(attributes)
+    json = TicketSharing::JsonSupport.encode(attributes)
     comment = TicketSharing::Comment.parse(json)
 
     assert_equal('Actor123', comment.author.uuid)
