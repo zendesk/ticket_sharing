@@ -19,7 +19,7 @@ class TicketSharing::TicketTest < MiniTest::Unit::TestCase
       'original_id' => '12'
     })
 
-    json = Yajl::Encoder.encode(attributes)
+    json = TicketSharing::JsonSupport.encode(attributes)
     ticket = TicketSharing::Ticket.parse(json)
 
     assert_equal(attributes['uuid'], ticket.uuid)
