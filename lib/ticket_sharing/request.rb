@@ -22,7 +22,11 @@ module TicketSharing
       @raw_request.body = @body
 
       http = Net::HTTP.new(@uri.host, @uri.port)
-      http.use_ssl = true if @uri.scheme == 'https'
+
+      if @uri.scheme == 'https'
+        http.use_ssl = true
+        http.ca_path = "/etc/ssl/certs" if File.exist?("/etc/ssl/certs")
+      end
 
       @raw_response = http.start do |http|
         http.request(@raw_request)
