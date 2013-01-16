@@ -6,6 +6,8 @@ module TicketSharing
     # this should very rarely have to go above 2, and definitely never any higher than 5
     MAX_REDIRECTS = 2
 
+    CA_PATH = "/etc/ssl/certs"
+
     def initialize(request_class, uri, body)
       @redirects = 0
       @uri = URI.parse(uri)
@@ -22,7 +24,11 @@ module TicketSharing
       @raw_request.body = @body
 
       http = Net::HTTP.new(@uri.host, @uri.port)
-      http.use_ssl = true if @uri.scheme == 'https'
+
+      if @uri.scheme == 'https'
+        http.use_ssl = true
+        http.ca_path = CA_PATH if File.exist?(CA_PATH)
+      end
 
       @raw_response = http.start do |http|
         http.request(@raw_request)
