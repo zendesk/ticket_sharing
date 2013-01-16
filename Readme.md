@@ -15,12 +15,12 @@ A ruby implementation of the [Networked Help Desk] [1] API
 
 ### Sending a ticket
 
-    ticket = TicketSharing::Ticket.new({
+    ticket = TicketSharing::Ticket.new(
       'uuid' => 'fc8daf77',
       'subject' => 'the subject',
       'requested_at' => '2011-01-17 01:01:01',
       'status' => 'new'
-    })
+    )
     ticket.send_to('http://example.com/sharing')
 
 ### Updating a ticket
@@ -35,3 +35,7 @@ A ruby implementation of the [Networked Help Desk] [1] API
 
 [1]: http://networkedhelpdesk.org/api/ "Networked Help Desk"
 [2]: https://github.com/zendesk/ticket_sharing/issues "Issues"
+
+## Author
+[Josh Lubaway](https://github.com/jish)<br/>
+License: MIT

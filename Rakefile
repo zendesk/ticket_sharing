@@ -1,7 +1,11 @@
+require 'bundler/gem_tasks'
+require 'bump/tasks'
 
-desc 'Run tests'
-task :test do
-  system "ruby -Ilib -Itest -e 'ARGV.each { |f| load f }' test/unit/*"
+require 'rake/testtask'
+Rake::TestTask.new(:test) do |test|
+  test.libs << 'lib' << 'test'
+  test.pattern = 'test/**/*_test.rb'
+  test.verbose = true
 end
 
 task :default => [:test]
