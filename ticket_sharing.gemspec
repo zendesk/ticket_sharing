@@ -5,6 +5,7 @@ Gem::Specification.new 'ticket_sharing', '0.6.11' do |s|
   s.files = Dir['lib/**/*']
   s.rdoc_options = ['--main', 'Readme.md']
   s.summary = 'Ticket sharing'
+  s.description = 'A ruby implementation of the Networked Help Desk API'
   s.homepage = 'https://github.com/zendesk/ticket_sharing'
   s.license = 'MIT'
 end
