@@ -12,8 +12,16 @@ module TicketSharing
       @fields || []
     end
 
+    def self.first_ancestor
+      ancestors.detect { |a| a != self }
+    end
+
     def field_list
-      self.class.field_list
+      if self.class.field_list.any?
+        self.class.field_list
+      else
+        self.class.first_ancestor.field_list
+      end
     end
 
     def initialize(attrs = {})
