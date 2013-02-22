@@ -82,6 +82,16 @@ class TicketSharing::ClientTest < MiniTest::Unit::TestCase
     end
   end
 
+  def test_a_failing_post_with_403_response
+    the_body = "{'error': 'the error'}"
+    FakeWeb.register_uri(:post, @base_url + @path,
+      :body => the_body, :status => [403, 'Forbidden'])
+
+    client = do_request(:post)
+    assert !client.success?
+    assert_equal("403", client.response.code)
+  end
+
   def test_a_failing_post_with_a_405_response
     the_body = "{'error': 'the error'}"
     FakeWeb.register_uri(:post, @base_url + @path,
