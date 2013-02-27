@@ -52,7 +52,7 @@ module TicketSharing
         when (300..399)
           request.follow_redirect!
           handle_response(request)
-        when 404, 405, 408, 410, 422
+        when 403, 404, 405, 408, 410, 422
           @success = false
           response
         when (500..599)
