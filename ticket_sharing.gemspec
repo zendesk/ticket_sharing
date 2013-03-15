@@ -7,5 +7,5 @@ Gem::Specification.new 'ticket_sharing', '0.6.13' do |s|
   s.summary = 'Ticket sharing'
   s.description = 'A ruby implementation of the Networked Help Desk API'
   s.homepage = 'https://github.com/zendesk/ticket_sharing'
-  s.license = 'MIT'
+  s.license = 'Apache License Version 2.0'
 end
