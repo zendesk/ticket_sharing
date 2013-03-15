@@ -1,3 +1,7 @@
+v1.0 -- March 15th, 2013
+
+* Switched to Apache License Version 2.0, See LICENSE for more details.
+
 v0.6.13 -- June 13th, 2012
 
 * Not blowing up when receiving a 403
