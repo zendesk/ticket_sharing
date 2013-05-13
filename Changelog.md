@@ -1,3 +1,6 @@
+v1.0.1 -- May 13th, 2013
+* Added display_filename to the list of attachments shared
+
 v1.0 -- March 15th, 2013
 
 * Switched to Apache License Version 2.0, See LICENSE for more details.
