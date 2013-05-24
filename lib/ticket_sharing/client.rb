@@ -3,24 +3,21 @@ require 'ticket_sharing/request'
 
 module TicketSharing
   class Client
-
-    attr_reader :response, :code
-
     def initialize(base_url, credentials=nil)
       @base_url    = base_url
       @credentials = credentials
     end
 
     def post(path, body)
-      send_request(Net::HTTP::Post, path, body)
+      send_request(:post, path, body)
     end
 
     def put(path, body)
-      send_request(Net::HTTP::Put, path, body)
+      send_request(:put, path, body)
     end
 
     def delete(path)
-      send_request(Net::HTTP::Delete, path, '')
+      send_request(:delete, path, '')
     end
 
     def success?
@@ -29,39 +26,23 @@ module TicketSharing
 
     private
 
-      def send_request(request_class, path, body)
-        request = TicketSharing::Request.new(request_class, @base_url + path, body)
+    def send_request(method, path, body)
+      headers = {'X-Ticket-Sharing-Token' => @credentials} if @credentials
+      response = TicketSharing::Request.new.request(method, @base_url + path, :body => body, :headers => headers)
 
-        if @credentials
-          request.set_header('X-Ticket-Sharing-Token', @credentials)
-        end
+      handle_response(response)
+    end
 
-        request.send!
-
-        handle_response(request)
+    def handle_response(response)
+      @success = case response.code.to_i
+      when (200..299)
+        true
+      when 403, 404, 405, 408, 410, 422, 500..599
+         false
+      else
+        raise TicketSharing::Error.new(%Q{#{response.code} "#{response.message}"\n\n#{response.body}})
       end
-
-      def handle_response(request)
-        @response = request.raw_response
-        @code = response.code.to_i
-
-        case @code
-        when (200..299)
-          @success = true
-          response
-        when (300..399)
-          request.follow_redirect!
-          handle_response(request)
-        when 403, 404, 405, 408, 410, 422
-          @success = false
-          response
-        when (500..599)
-          @success = false
-          response
-        else
-          raise TicketSharing::Error.new(%Q{#{response.code} "#{response.message}"\n\n#{response.body}})
-        end
-      end
-
+      response
+    end
   end
 end
