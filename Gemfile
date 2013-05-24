@@ -5,6 +5,7 @@ gem 'yajl-ruby'
 
 group :test do
   gem 'fakeweb'
-  gem 'minitest'
+  gem 'minitest', '~> 4.0'
+  gem 'mocha', '~> 0.13'
   gem 'minitest-rg'
 end

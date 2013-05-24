@@ -46,6 +46,18 @@ describe TicketSharing::Request do
     request['X-Foo'].must_equal '1'
   end
 
+  it "does not verify ssl with non verify option" do
+    FakeWeb.register_uri(:post, 'https://example.com/sharing', :body => "body")
+    Net::HTTP.any_instance.expects(:verify_mode=).with(OpenSSL::SSL::VERIFY_NONE)
+    TicketSharing::Request.new.request(:post, 'https://example.com/sharing', :ssl => {:verify => false})
+  end
+
+  it "does not set special verify_mode without option" do
+    FakeWeb.register_uri(:post, 'https://example.com/sharing/1', :body => "body")
+    Net::HTTP.any_instance.expects(:verify_mode=).never
+    TicketSharing::Request.new.request(:post, 'https://example.com/sharing')
+  end
+
   def redirect(url)
     redirect_response = Net::HTTPResponse.new('1.1', '302', 'Found')
     redirect_response['Location'] = url

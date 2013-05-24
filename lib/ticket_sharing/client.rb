@@ -8,16 +8,16 @@ module TicketSharing
       @credentials = credentials
     end
 
-    def post(path, body)
-      send_request(:post, path, body)
+    def post(path, body, options={})
+      send_request(:post, path, body, options)
     end
 
-    def put(path, body)
-      send_request(:put, path, body)
+    def put(path, body, options={})
+      send_request(:put, path, body, options)
     end
 
-    def delete(path)
-      send_request(:delete, path, '')
+    def delete(path, options={})
+      send_request(:delete, path, '', options)
     end
 
     def success?
@@ -26,9 +26,10 @@ module TicketSharing
 
     private
 
-    def send_request(method, path, body)
+    def send_request(method, path, body, options)
       headers = {'X-Ticket-Sharing-Token' => @credentials} if @credentials
-      response = TicketSharing::Request.new.request(method, @base_url + path, :body => body, :headers => headers)
+      options = options.merge(:body => body, :headers => headers)
+      response = TicketSharing::Request.new.request(method, @base_url + path, options)
 
       handle_response(response)
     end

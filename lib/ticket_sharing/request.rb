@@ -26,7 +26,7 @@ module TicketSharing
     def send_request(request_class, url, options)
       uri = URI.parse(url)
       request = build_request(request_class, uri, options)
-      send!(request, uri)
+      send!(request, uri, options)
     end
 
     def build_request(request_class, uri, options)
@@ -43,12 +43,16 @@ module TicketSharing
       request
     end
 
-    def send!(request, uri)
+    def send!(request, uri, options)
       http = Net::HTTP.new(uri.host, uri.port)
 
       if uri.scheme == 'https'
         http.use_ssl = true
         http.ca_path = CA_PATH if File.exist?(CA_PATH)
+
+        if options[:ssl] && options[:ssl][:verify] == false
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+        end
       end
 
       http.start { |http| http.request(request) }
