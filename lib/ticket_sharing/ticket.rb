@@ -45,9 +45,13 @@ module TicketSharing
       raise "Agreement not present" unless agreement
 
       client = Client.new(url, agreement.authentication_token)
-      response = client.post(relative_url, self.to_json)
+      @response = client.post(relative_url, self.to_json)
 
-      response.code.to_i
+      @response.code.to_i
+    end
+
+    def response_body
+      @response.body if @response
     end
 
     def update_partner(url)
