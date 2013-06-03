@@ -50,22 +50,22 @@ module TicketSharing
       @response.code.to_i
     end
 
-    def response_body
-      @response.body if @response
-    end
-
     def update_partner(url)
       client = Client.new(url, agreement.authentication_token)
-      response = client.put(relative_url, self.to_json)
+      @response = client.put(relative_url, self.to_json)
 
-      response.code.to_i
+      @response.code.to_i
     end
 
     def unshare(base_url)
       client = Client.new(base_url, agreement.authentication_token)
-      response = client.delete(relative_url)
+      @response = client.delete(relative_url)
 
-      response.code.to_i
+      @response.code.to_i
+    end
+
+    def response
+      @response
     end
 
     def relative_url
