@@ -8,6 +8,8 @@ module TicketSharing
     fields :receiver_url, :sender_url, :status, :uuid, :access_key, :name,
       :current_actor, :sync_tags, :sync_custom_fields, :allows_public_comments
 
+    attr_reader :response
+
     def self.parse(json)
       attributes = JsonSupport.decode(json)
       agreement = new(attributes)
@@ -19,16 +21,16 @@ module TicketSharing
 
     def send_to(url)
       client = Client.new(url)
-      response = client.post(relative_url, self.to_json)
+      @response = client.post(relative_url, self.to_json)
 
-      response.code.to_i
+      @response.code.to_i
     end
 
     def update_partner(url)
       client = Client.new(url, authentication_token)
-      response = client.put(relative_url, self.to_json)
+      @response = client.put(relative_url, self.to_json)
 
-      response.code.to_i
+      @response.code.to_i
     end
 
     def relative_url
