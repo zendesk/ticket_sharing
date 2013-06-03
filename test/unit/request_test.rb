@@ -53,7 +53,7 @@ describe TicketSharing::Request do
   end
 
   it "does not set special verify_mode without option" do
-    FakeWeb.register_uri(:post, 'https://example.com/sharing/1', :body => "body")
+    FakeWeb.register_uri(:post, 'https://example.com/sharing', :body => "body")
     Net::HTTP.any_instance.expects(:verify_mode=).never
     TicketSharing::Request.new.request(:post, 'https://example.com/sharing')
   end
