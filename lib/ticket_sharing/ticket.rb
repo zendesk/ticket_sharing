@@ -12,6 +12,7 @@ module TicketSharing
       :current_actor, :tags, :original_id, :custom_fields
 
     attr_accessor :agreement
+    attr_reader :response
 
     def self.parse(json)
       attributes = JsonSupport.decode(json)
@@ -45,23 +46,23 @@ module TicketSharing
       raise "Agreement not present" unless agreement
 
       client = Client.new(url, agreement.authentication_token)
-      response = client.post(relative_url, self.to_json)
+      @response = client.post(relative_url, self.to_json)
 
-      response.code.to_i
+      @response.code.to_i
     end
 
     def update_partner(url)
       client = Client.new(url, agreement.authentication_token)
-      response = client.put(relative_url, self.to_json)
+      @response = client.put(relative_url, self.to_json)
 
-      response.code.to_i
+      @response.code.to_i
     end
 
     def unshare(base_url)
       client = Client.new(base_url, agreement.authentication_token)
-      response = client.delete(relative_url)
+      @response = client.delete(relative_url)
 
-      response.code.to_i
+      @response.code.to_i
     end
 
     def relative_url
