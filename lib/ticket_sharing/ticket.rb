@@ -12,6 +12,7 @@ module TicketSharing
       :current_actor, :tags, :original_id, :custom_fields
 
     attr_accessor :agreement
+    attr_reader :response
 
     def self.parse(json)
       attributes = JsonSupport.decode(json)
@@ -62,10 +63,6 @@ module TicketSharing
       @response = client.delete(relative_url)
 
       @response.code.to_i
-    end
-
-    def response
-      @response
     end
 
     def relative_url
