@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 gem 'rake'
 gem 'yajl-ruby'
+gem 'bump'
 
 group :test do
   gem 'fakeweb'
