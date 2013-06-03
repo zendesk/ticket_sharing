@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 require 'ticket_sharing/actor'
 
 class ActorTest < MiniTest::Unit::TestCase
