@@ -1,32 +1,66 @@
-require 'test_helper'
+require File.expand_path('../../test_helper', __FILE__)
 require 'ticket_sharing/request'
 
-class TicketSharing::RequestTest < MiniTest::Unit::TestCase
+describe TicketSharing::Request do
+  it "uses correct headers" do
+    FakeWeb.register_uri(:post, 'http://example.com/sharing', :body => "")
+    TicketSharing::Request.new.request(:post, 'http://example.com/sharing')
 
-  def test_a_new_raw_request_should_have_a_json_accept_header
-    request = TicketSharing::Request.new(Net::HTTP::Post,
-      'http://example.com/sharing', 'body')
-
-    raw_request = request.new_raw_request
-    assert_equal('application/json', raw_request['Accept'])
+    request = FakeWeb.last_request
+    request['Content-Type'].must_equal 'application/json'
+    request['Accept'].must_equal 'application/json'
   end
 
-  def test_a_new_raw_request_should_set_content_type_to_json
-    request = TicketSharing::Request.new(Net::HTTP::Post,
-      'http://example.com/sharing', 'body')
+  it "can set headers" do
+    FakeWeb.register_uri(:post, 'http://example.com/sharing', :body => "")
+    TicketSharing::Request.new.request(:post, 'http://example.com/sharing', :headers => {'X-Foo' => '1234'})
 
-    raw_request = request.new_raw_request
-    assert_equal('application/json', raw_request['Content-Type'])
-  end
-  
-
-  def test_a_new_raw_request_should_retain_the_ticket_sharing_token
-    request = TicketSharing::Request.new(Net::HTTP::Post,
-      'http://example.com/sharing', 'body')
-    request.set_header('X-Ticket-Sharing-Token', '1234')
-
-    raw_request = request.new_raw_request
-    assert_equal('1234', raw_request['X-Ticket-Sharing-Token'])
+    request = FakeWeb.last_request
+    request['X-Foo'].must_equal '1234'
   end
 
+  it "fails with too many redirects" do
+    FakeWeb.register_uri(:post, 'http://example.com/sharing', :response => redirect('http://example.com/sharing'))
+
+    assert_raises TicketSharing::TooManyRedirects do
+      TicketSharing::Request.new.request(:post, 'http://example.com/sharing', :body => "body")
+    end
+  end
+
+  it "follows redirects" do
+    FakeWeb.register_uri(:post, 'http://example.com/sharing', :response => redirect('http://example.com/sharing/1'))
+    FakeWeb.register_uri(:post, 'http://example.com/sharing/1', :status => 200)
+
+    response = TicketSharing::Request.new.request(:post, 'http://example.com/sharing', :body => "body")
+    response.code.to_i.must_equal 200
+  end
+
+  it "resets headers on redirect request" do
+    FakeWeb.register_uri(:post, 'http://example.com/sharing', :response => redirect('http://example.com/sharing/1'))
+    FakeWeb.register_uri(:post, 'http://example.com/sharing/1', :status => 200)
+
+    response = TicketSharing::Request.new.request(:post, 'http://example.com/sharing', :headers => {"X-Foo" => "1"})
+    response.code.to_i.must_equal 200 # got redirected ?
+
+    request = FakeWeb.last_request
+    request['X-Foo'].must_equal '1'
+  end
+
+  it "does not verify ssl with non verify option" do
+    FakeWeb.register_uri(:post, 'https://example.com/sharing', :body => "body")
+    Net::HTTP.any_instance.expects(:verify_mode=).with(OpenSSL::SSL::VERIFY_NONE)
+    TicketSharing::Request.new.request(:post, 'https://example.com/sharing', :ssl => {:verify => false})
+  end
+
+  it "does not set special verify_mode without option" do
+    FakeWeb.register_uri(:post, 'https://example.com/sharing/1', :body => "body")
+    Net::HTTP.any_instance.expects(:verify_mode=).never
+    TicketSharing::Request.new.request(:post, 'https://example.com/sharing')
+  end
+
+  def redirect(url)
+    redirect_response = Net::HTTPResponse.new('1.1', '302', 'Found')
+    redirect_response['Location'] = url
+    redirect_response
+  end
 end
