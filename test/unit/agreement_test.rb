@@ -129,6 +129,25 @@ class TicketSharing::AgreementTest < MiniTest::Unit::TestCase
     assert_equal('5ad614f4:APIKEY123', request['X-Ticket-Sharing-Token'])
   end
 
+  def test_should_destroy_partner
+    FakeWeb.last_request = nil
+    FakeWeb.register_uri(:delete,
+      'http://example.com/sharing/agreements/5ad614f4', :body => '')
+
+    attributes = {
+      'receiver_url' => 'http://example.com/sharing',
+      'uuid' => '5ad614f4',
+      'access_key' => 'APIKEY123'
+    }
+
+    agreement = TicketSharing::Agreement.new(attributes)
+    assert agreement.remove_partner(attributes['receiver_url'])
+
+    request = FakeWeb.last_request
+    assert_equal('/sharing/agreements/5ad614f4', request.path)
+    assert_equal('5ad614f4:APIKEY123', request['X-Ticket-Sharing-Token'])
+  end
+
   def test_should_deserialize_current_actor
     json = TicketSharing::JsonSupport.encode({
       'current_actor' => {
