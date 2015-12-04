@@ -33,6 +33,13 @@ module TicketSharing
       @response.code.to_i
     end
 
+    def remove_partner(url)
+      client = Client.new(url, authentication_token)
+      @response = client.delete(relative_url)
+
+      @response.code.to_i
+    end
+
     def relative_url
       '/agreements/' + uuid.to_s
     end
