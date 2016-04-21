@@ -86,7 +86,7 @@ class TicketSharing::CommentTest < MiniTest::Unit::TestCase
     assert !comment.rich?
   end
 
-  def test_a_comment_explicitly_set_to_private_should_not_be_public
+  def test_a_comment_explicitly_set_to_rich_format_should_be_rich
     comment = TicketSharing::Comment.new({
       'rich' => true
     })
