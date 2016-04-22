@@ -81,18 +81,6 @@ class TicketSharing::CommentTest < MiniTest::Unit::TestCase
     assert !comment.public?
   end
 
-  def test_a_comment_that_does_not_specify_its_rich_format_should_not_be_rich
-    comment = TicketSharing::Comment.new
-    assert !comment.rich?
-  end
-
-  def test_a_comment_explicitly_set_to_rich_format_should_be_rich
-    comment = TicketSharing::Comment.new({
-      'rich' => true
-    })
-    assert comment.rich?
-  end
-
   def test_storing_authored_at
     now = Time.now
     comment = TicketSharing::Comment.new('authored_at' => now)
