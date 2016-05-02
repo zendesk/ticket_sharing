@@ -30,13 +30,15 @@ module TicketSharing
       end
     end
 
-    def to_json
-      attributes = field_list.inject({}) do |attrs, field|
+    def as_json(_options = {})
+      field_list.inject({}) do |attrs, field|
         attrs[field.to_s] = send(field)
         attrs
       end
+    end
 
-      JsonSupport.encode(attributes)
+    def to_json(_options = {})
+      JsonSupport.encode(as_json)
     end
 
   end

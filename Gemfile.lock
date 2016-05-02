@@ -9,7 +9,6 @@ GEM
     mocha (0.14.0)
       metaclass (~> 0.0.1)
     rake (0.9.2.2)
-    yajl-ruby (0.8.2)
 
 PLATFORMS
   ruby
@@ -21,4 +20,6 @@ DEPENDENCIES
   minitest-rg
   mocha (~> 0.13)
   rake
-  yajl-ruby
+
+BUNDLED WITH
+   1.11.2
