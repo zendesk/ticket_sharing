@@ -2,10 +2,7 @@ require 'bundler/setup'
 require 'bundler/gem_tasks'
 require 'bump/tasks'
 
-require 'rake/testtask'
-Rake::TestTask.new(:test) do |test|
-  test.pattern = 'test/**/*_test.rb'
-  test.verbose = true
-end
+require 'rspec/core/rake_task'
+RSpec::Core::RakeTask.new(:spec)
 
-task :default => [:test]
+task default: [:spec]
