@@ -10,7 +10,7 @@ A ruby implementation of the [Networked Help Desk] [1] API
 
 ### Creating an agreement
 
-    agreement = TicketSharing::Agreement.new({'uuid' => '5ad614f4'})
+    agreement = TicketSharing::Agreement.new('uuid' => '5ad614f4')
     agreement.send_to('http://example.com/sharing')
 
 ### Sending a ticket
@@ -25,7 +25,7 @@ A ruby implementation of the [Networked Help Desk] [1] API
 
 ### Updating a ticket
 
-    ticket = TicketSharing::Ticket.new({'status' => 'new'})
+    ticket = TicketSharing::Ticket.new('status' => 'new')
     ticket.update_partner('http://example.com/sharing')
 
 ## Contributing

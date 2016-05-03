@@ -10,4 +10,10 @@ Gem::Specification.new 'ticket_sharing', '1.2.0' do |s|
   s.license = 'Apache License Version 2.0'
 
   s.required_ruby_version = '>= 2.1.0'
+
+  s.add_development_dependency 'rake'
+  s.add_development_dependency 'bump'
+  s.add_development_dependency 'webmock'
+  s.add_development_dependency 'rspec'
+  
 end
