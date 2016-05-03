@@ -1,4 +1,4 @@
-Gem::Specification.new 'ticket_sharing', '1.1.1' do |s|
+Gem::Specification.new 'ticket_sharing', '1.2.0' do |s|
   s.authors = ['Josh Lubaway']
   s.email = 'josh@zendesk.com'
   s.extra_rdoc_files = ['Readme.md']
