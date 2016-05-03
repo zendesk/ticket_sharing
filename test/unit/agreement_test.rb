@@ -87,8 +87,7 @@ class TicketSharing::AgreementTest < MiniTest::Unit::TestCase
     }
 
     agreement = TicketSharing::Agreement.new(attributes)
-    FakeWeb.register_uri(:post,
-      'http://example.com/sharing/agreements/5ad614f4', :body => '')
+    stub_request(:post, 'http://example.com/sharing/agreements/5ad614f4')
 
     assert agreement.send_to(attributes['receiver_url'])
   end
@@ -100,9 +99,8 @@ class TicketSharing::AgreementTest < MiniTest::Unit::TestCase
     }
 
     agreement = TicketSharing::Agreement.new(attributes)
-    FakeWeb.register_uri(:post,
-      'http://example.com/sharing/agreements/5ad614f4',
-      :body => '', :status => [400, "Bad Request"])
+    stub_request(:post, 'http://example.com/sharing/agreements/5ad614f4')
+      .to_return(:status => 400)
 
     assert_raises(TicketSharing::Error) do
       agreement.send_to(attributes['receiver_url'])
@@ -110,9 +108,8 @@ class TicketSharing::AgreementTest < MiniTest::Unit::TestCase
   end
 
   def test_should_update_partner
-    FakeWeb.last_request = nil
-    FakeWeb.register_uri(:put,
-      'http://example.com/sharing/agreements/5ad614f4', :body => '')
+    stub_request(:put, 'http://example.com/sharing/agreements/5ad614f4')
+      .with(:body => /5ad614f4/, :headers => { 'X-Ticket-Sharing-Token' => '5ad614f4:APIKEY123' })
 
     attributes = {
       'receiver_url' => 'http://example.com/sharing',
@@ -122,11 +119,6 @@ class TicketSharing::AgreementTest < MiniTest::Unit::TestCase
 
     agreement = TicketSharing::Agreement.new(attributes)
     assert agreement.update_partner(attributes['receiver_url'])
-
-    request = FakeWeb.last_request
-    assert_equal('/sharing/agreements/5ad614f4', request.path)
-    assert_match(/5ad614f4/, request.body)
-    assert_equal('5ad614f4:APIKEY123', request['X-Ticket-Sharing-Token'])
   end
 
   def test_should_deserialize_current_actor

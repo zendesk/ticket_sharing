@@ -6,9 +6,6 @@ class TicketSharing::ClientTest < MiniTest::Unit::TestCase
   def setup
     @base_url = 'http://example.com/sharing'
     @path     = '/'
-
-    FakeWeb.clean_registry
-    FakeWeb.last_request = nil
   end
 
   def do_request(method, options={})
@@ -18,38 +15,44 @@ class TicketSharing::ClientTest < MiniTest::Unit::TestCase
   end
 
   def test_a_successful_post_with_200_response
-    FakeWeb.register_uri(:post, @base_url + @path, :body => '')
+    expected_request = stub_request(:post, @base_url + @path)
+
     client, response = do_request(:post)
     assert client.success?
     assert_equal("200", response.code)
     assert !response.nil?
-    assert_equal('POST', FakeWeb.last_request.method)
+
+    assert_requested(expected_request)
   end
 
   def test_a_successful_post_with_ssl
     @base_url = 'https://example.com/sharing'
 
-    FakeWeb.register_uri(:post, @base_url + @path, :body => '',
-      :status => [200, 'OK'])
+    expected_request = stub_request(:post, @base_url + @path)
 
     do_request(:post)
+
+    assert_requested(expected_request)
   end
 
   def test_a_successful_post_with_201_response
-    FakeWeb.register_uri(:post, @base_url + @path, :body => '', :status => '201')
+    expected_request = stub_request(:post, @base_url + @path)
+      .and_return(:status => 201)
+
     client, response = do_request(:post)
     assert client.success?
     assert_equal("201", response.code)
-    assert_equal('POST', FakeWeb.last_request.method)
+
+    assert_requested(expected_request)
   end
 
   def test_should_follow_redirects
     client = TicketSharing::Client.new('http://example.com/sharing')
 
-    FakeWeb.register_uri(:post, 'http://example.com/sharing/', :body => '',
-      :status => '302', :location => 'https://example.com/sharing/')
-    FakeWeb.register_uri(:post, 'https://example.com/sharing/',
-      :body => 'the final url', :status => '201')
+    stub_request(:post, 'http://example.com/sharing/')
+      .and_return(:status => 302, :headers => { 'Location' => 'https://example.com/sharing/' })
+    stub_request(:post, 'https://example.com/sharing/')
+      .and_return(:body => 'the final url', :status => 201)
 
     response = client.post('/', '')
     assert_equal('201', response.code)
@@ -61,8 +64,8 @@ class TicketSharing::ClientTest < MiniTest::Unit::TestCase
   def test_should_not_follow_more_than_x_redirects
     client = TicketSharing::Client.new('http://example.com/sharing')
 
-    FakeWeb.register_uri(:post, 'http://example.com/sharing/', :body => '',
-      :status => '302', :location => 'http://example.com/sharing/')
+    stub_request(:post, 'http://example.com/sharing/')
+      .and_return(:status => 302, :headers => { 'Location' => 'http://example.com/sharing/' })
 
     assert_raises(TicketSharing::TooManyRedirects) do
       response = client.post('/', '')
@@ -71,8 +74,8 @@ class TicketSharing::ClientTest < MiniTest::Unit::TestCase
 
   def test_a_failing_post_with_400_response
     the_body = "{'error': 'the error'}"
-    FakeWeb.register_uri(:post, @base_url + @path,
-      :body => the_body, :status => [400, 'Bad Request'])
+    stub_request(:post, @base_url + @path)
+      .and_return(:body => the_body, :status => [400, 'Bad Request'])
 
     begin
       client, response = do_request(:post)
@@ -84,8 +87,8 @@ class TicketSharing::ClientTest < MiniTest::Unit::TestCase
 
   def test_a_failing_post_with_403_response
     the_body = "{'error': 'the error'}"
-    FakeWeb.register_uri(:post, @base_url + @path,
-      :body => the_body, :status => [403, 'Forbidden'])
+    stub_request(:post, @base_url + @path)
+      .and_return(:body => the_body, :status => 403)
 
     client, response = do_request(:post)
     assert !client.success?
@@ -94,8 +97,8 @@ class TicketSharing::ClientTest < MiniTest::Unit::TestCase
 
   def test_a_failing_post_with_a_405_response
     the_body = "{'error': 'the error'}"
-    FakeWeb.register_uri(:post, @base_url + @path,
-      :body => the_body, :status => [405, 'Method Not Allowed'])
+    stub_request(:post, @base_url + @path)
+      .and_return(:body => the_body, :status => 405)
 
     client, response = do_request(:post)
     assert !client.success?
@@ -103,8 +106,8 @@ class TicketSharing::ClientTest < MiniTest::Unit::TestCase
 
   def test_a_failing_post_with_404_response
     the_body = "{'error': 'the error'}"
-    FakeWeb.register_uri(:post, @base_url + @path,
-      :body => the_body, :status => [404, 'Not Found'])
+    stub_request(:post, @base_url + @path)
+      .and_return(:body => the_body, :status => 404)
 
     client, response = do_request(:post)
     assert !client.success?
@@ -112,8 +115,8 @@ class TicketSharing::ClientTest < MiniTest::Unit::TestCase
 
   def test_a_failing_post_with_410_response
     the_body = "{'error': 'the error'}"
-    FakeWeb.register_uri(:post, @base_url + @path,
-      :body => the_body, :status => [410, 'Gone'])
+    stub_request(:post, @base_url + @path)
+      .and_return(:body => the_body, :status => 410)
 
     client, response = do_request(:post)
     assert !client.success?
@@ -122,8 +125,8 @@ class TicketSharing::ClientTest < MiniTest::Unit::TestCase
 
   def test_a_failing_post_with_422_response
     the_body = "{'error': 'the error'}"
-    FakeWeb.register_uri(:post, @base_url + @path,
-      :body => the_body, :status => [422, 'Unprocessable Entity'])
+    stub_request(:post, @base_url + @path)
+      .and_return(:body => the_body, :status => 422)
 
     client, response = do_request(:post)
     assert !client.success?
@@ -132,52 +135,46 @@ class TicketSharing::ClientTest < MiniTest::Unit::TestCase
 
   def test_a_failing_post_with_a_5xx_response
     the_body = "{'error': 'the error'}"
-    FakeWeb.register_uri(:post, @base_url + @path,
-      :body => the_body, :status => [500, 'Internal Server Error'])
+    stub_request(:post, @base_url + @path)
+      .and_return(:body => the_body, :status => 500)
 
     client, response = do_request(:post)
     assert !client.success?
   end
 
   def test_a_successful_post_without_a_token
-    FakeWeb.register_uri(:post, @base_url + @path, :body => '')
+    expected_request = stub_request(:post, @base_url + @path).with do |request|
+      request.headers['X-Ticket-Sharing-Token'] == nil
+    end
     client, response = do_request(:post)
     assert client.success?
-    assert_nil FakeWeb.last_request['X-Ticket-Sharing-Token']
   end
 
   def test_a_successful_post_with_auth_token
-    FakeWeb.register_uri(:post, @base_url + @path, :body => '')
+    stub_request(:post, @base_url + @path)
+      .with(headers: { 'X-Ticket-Sharing-Token' => 'the_token' })
     client, response = do_request(:post, :token => 'the_token')
     assert client.success?
-    assert_equal('the_token', FakeWeb.last_request['X-Ticket-Sharing-Token'])
   end
 
   def test_a_successful_put
-    FakeWeb.register_uri(:put, 'http://example.com/sharing/', :body => '')
+    stub_request(:put, 'http://example.com/sharing/')
     client, response = do_request(:put)
     assert client.success?
-    assert_equal('PUT', FakeWeb.last_request.method)
   end
 
   def test_a_successful_put_with_auth_token
-    FakeWeb.register_uri(:post, 'http://example.com/sharing/', :body => '')
+    stub_request(:post, 'http://example.com/sharing/')
+      .with(headers: { 'X-Ticket-Sharing-Token' => 'the_token' })
     client, response = do_request(:post, :token => 'the_token')
     assert client.success?
-    assert_equal('the_token', FakeWeb.last_request['X-Ticket-Sharing-Token'])
   end
 
   def test_a_successful_delete
-    FakeWeb.last_request = nil
-    FakeWeb.register_uri(:delete, 'http://example.com/sharing/tickets/t1',
-      :body => '')
+    stub_request(:delete, 'http://example.com/sharing/tickets/t1')
 
     client = TicketSharing::Client.new('http://example.com/sharing/')
     client.delete('tickets/t1')
-
-    assert response = FakeWeb.last_request
-    assert_equal('/sharing/tickets/t1', response.path)
-    assert_equal('DELETE', response.method)
   end
 
 end

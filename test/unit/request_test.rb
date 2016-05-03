@@ -3,64 +3,74 @@ require 'ticket_sharing/request'
 
 describe TicketSharing::Request do
   it "uses correct headers" do
-    FakeWeb.register_uri(:post, 'http://example.com/sharing', :body => "")
+    expected_request = stub_request(:post, 'http://example.com/sharing')
+      .with(headers: { 'Content-Type' => 'application/json', 'Accept' => 'application/json' })
+
     TicketSharing::Request.new.request(:post, 'http://example.com/sharing')
 
-    request = FakeWeb.last_request
-    request['Content-Type'].must_equal 'application/json'
-    request['Accept'].must_equal 'application/json'
+    assert_requested(expected_request)
   end
 
   it "can set headers" do
-    FakeWeb.register_uri(:post, 'http://example.com/sharing', :body => "")
+    expected_request = stub_request(:post, 'http://example.com/sharing')
+      .with(headers: { 'X-Foo' => '1234' })
+
     TicketSharing::Request.new.request(:post, 'http://example.com/sharing', :headers => {'X-Foo' => '1234'})
 
-    request = FakeWeb.last_request
-    request['X-Foo'].must_equal '1234'
+    assert_requested(expected_request)
   end
 
   it "fails with too many redirects" do
-    FakeWeb.register_uri(:post, 'http://example.com/sharing', :response => redirect('http://example.com/sharing'))
+    expected_request = stub_request(:post, 'http://example.com/sharing')
+      .and_return(status: 302, headers: { 'Location' => 'http://example.com/sharing' })
 
     assert_raises TicketSharing::TooManyRedirects do
       TicketSharing::Request.new.request(:post, 'http://example.com/sharing', :body => "body")
     end
+
+    assert_requested(expected_request, :times => 3)
   end
 
   it "follows redirects" do
-    FakeWeb.register_uri(:post, 'http://example.com/sharing', :response => redirect('http://example.com/sharing/1'))
-    FakeWeb.register_uri(:post, 'http://example.com/sharing/1', :status => 200)
+    expected_request1 = stub_request(:post, 'http://example.com/sharing')
+      .and_return(status: 302, headers: { 'Location' => 'http://example.com/sharing/1' })
+    expected_request2 = stub_request(:post, 'http://example.com/sharing/1')
 
     response = TicketSharing::Request.new.request(:post, 'http://example.com/sharing', :body => "body")
     response.code.to_i.must_equal 200
+
+    assert_requested(expected_request1)
+    assert_requested(expected_request2)
   end
 
   it "resets headers on redirect request" do
-    FakeWeb.register_uri(:post, 'http://example.com/sharing', :response => redirect('http://example.com/sharing/1'))
-    FakeWeb.register_uri(:post, 'http://example.com/sharing/1', :status => 200)
+    expected_request1 = stub_request(:post, 'http://example.com/sharing')
+      .and_return(status: 302, headers: { 'Location' => 'http://example.com/sharing/1' })
+    expected_request2 = stub_request(:post, 'http://example.com/sharing/1')
+      .with(headers: { 'X-Foo' => '1' })
 
     response = TicketSharing::Request.new.request(:post, 'http://example.com/sharing', :headers => {"X-Foo" => "1"})
     response.code.to_i.must_equal 200 # got redirected ?
 
-    request = FakeWeb.last_request
-    request['X-Foo'].must_equal '1'
+    assert_requested(expected_request1)
+    assert_requested(expected_request2)
   end
 
   it "does not verify ssl with non verify option" do
-    FakeWeb.register_uri(:post, 'https://example.com/sharing', :body => "body")
+    expected_request = stub_request(:post, 'https://example.com/sharing')
     Net::HTTP.any_instance.expects(:verify_mode=).with(OpenSSL::SSL::VERIFY_NONE)
+
     TicketSharing::Request.new.request(:post, 'https://example.com/sharing', :ssl => {:verify => false})
+
+    assert_requested(expected_request)
   end
 
   it "does not set special verify_mode without option" do
-    FakeWeb.register_uri(:post, 'https://example.com/sharing', :body => "body")
+    expected_request = stub_request(:post, 'https://example.com/sharing')
     Net::HTTP.any_instance.expects(:verify_mode=).never
-    TicketSharing::Request.new.request(:post, 'https://example.com/sharing')
-  end
 
-  def redirect(url)
-    redirect_response = Net::HTTPResponse.new('1.1', '302', 'Found')
-    redirect_response['Location'] = url
-    redirect_response
+    TicketSharing::Request.new.request(:post, 'https://example.com/sharing')
+
+    assert_requested(expected_request)
   end
 end

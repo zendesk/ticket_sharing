@@ -141,20 +141,18 @@ class TicketSharing::TicketTest < MiniTest::Unit::TestCase
       'uuid' => '123', 'access_key' => 'abc'
     })
 
-    FakeWeb.register_uri(:post,
-      'http://example.com/sharing/tickets/123abc', :body => '')
+    expected_request = stub_request(:post, 'http://example.com/sharing/tickets/123abc').with do |request|
+      request.headers['X-Ticket-Sharing-Token'] == ticket.agreement.authentication_token
+    end
 
     assert ticket.send_to('http://example.com/sharing')
 
-    assert request = FakeWeb.last_request
-    assert !request['X-Ticket-Sharing-Token'].nil?
-    assert_equal(ticket.agreement.authentication_token,
-      request['X-Ticket-Sharing-Token'])
+    assert_requested(expected_request)
   end
 
   def test_should_update_partner
-    FakeWeb.last_request = nil
-    FakeWeb.register_uri(:put, 'http://example.com/sharing/tickets/t1', :body => '')
+    expected_request = stub_request(:put, 'http://example.com/sharing/tickets/t1')
+      .with(:headers => { 'X-Ticket-Sharing-Token' => 'a1:key' })
 
     ticket = TicketSharing::Ticket.new(valid_ticket_attributes('uuid' => 't1'))
     ticket.agreement = TicketSharing::Agreement.new({
@@ -162,13 +160,13 @@ class TicketSharing::TicketTest < MiniTest::Unit::TestCase
     })
 
     assert ticket.update_partner('http://example.com/sharing')
-    assert request = FakeWeb.last_request
-    assert_equal('a1:key', request['X-Ticket-Sharing-Token'])
+
+    assert_requested(expected_request)
   end
 
   def test_should_unshare
-    FakeWeb.last_request = nil
-    FakeWeb.register_uri(:delete, 'http://example.com/sharing/tickets/t1', :body => '')
+    expected_request = stub_request(:delete, 'http://example.com/sharing/tickets/t1')
+      .with(headers: { 'X-Ticket-Sharing-Token' => 'a1:key' })
 
     ticket = TicketSharing::Ticket.new(valid_ticket_attributes('uuid' => 't1'))
     ticket.agreement = TicketSharing::Agreement.new({
@@ -177,9 +175,7 @@ class TicketSharing::TicketTest < MiniTest::Unit::TestCase
 
     assert ticket.unshare('http://example.com/sharing')
 
-    assert request = FakeWeb.last_request
-    assert_equal('/sharing/tickets/t1', request.path)
-    assert_equal('a1:key', request['X-Ticket-Sharing-Token'])
+    assert_requested(expected_request)
   end
 
   def test_should_set_requested_at_from_string
