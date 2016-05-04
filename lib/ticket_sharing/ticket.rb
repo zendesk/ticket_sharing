@@ -48,21 +48,21 @@ module TicketSharing
       client = Client.new(url, agreement.authentication_token)
       @response = client.post(relative_url, self.to_json)
 
-      @response.code.to_i
+      @response.status
     end
 
     def update_partner(url)
       client = Client.new(url, agreement.authentication_token)
       @response = client.put(relative_url, self.to_json)
 
-      @response.code.to_i
+      @response.status
     end
 
     def unshare(base_url)
       client = Client.new(base_url, agreement.authentication_token)
       @response = client.delete(relative_url)
 
-      @response.code.to_i
+      @response.status
     end
 
     def relative_url

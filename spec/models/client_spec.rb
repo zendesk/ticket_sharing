@@ -20,7 +20,7 @@ describe TicketSharing::Client do
     client, response = do_request(:post)
     expect(client).to be_success
     expect(response).to_not be_nil
-    expect(response.code).to eq('200')
+    expect(response.status).to eq(200)
 
     expect(expected_request).to have_been_requested
   end
@@ -41,7 +41,7 @@ describe TicketSharing::Client do
 
     client, response = do_request(:post)
     expect(client).to be_success
-    expect(response.code).to eq('201')
+    expect(response.status).to eq(201)
 
     expect(expected_request).to have_been_requested
   end
@@ -55,7 +55,7 @@ describe TicketSharing::Client do
       .and_return(body: 'the final url', status: 201)
 
     response = client.post('/', '')
-    expect(response.code).to eq('201')
+    expect(response.status).to eq(201)
     expect(response.body).to eq('the final url')
 
     expect(client).to be_success
@@ -75,11 +75,11 @@ describe TicketSharing::Client do
   it 'handles a failing post with 400 response' do
     the_body = "{'error': 'the error'}"
     stub_request(:post, @base_url + @path)
-      .and_return(body: the_body, status: [400, 'Bad Request'])
+      .and_return(body: the_body, status: 400)
 
     expect {
       client, response = do_request(:post)
-    }.to raise_error(TicketSharing::Error, %Q{400 "Bad Request"\n\n} + the_body)
+    }.to raise_error(TicketSharing::Error, %Q{400\n\n} + the_body)
   end
 
   it 'handles a failing post with 403 response' do
@@ -89,7 +89,7 @@ describe TicketSharing::Client do
 
     client, response = do_request(:post)
     expect(client).to_not be_success
-    expect(response.code).to eq('403')
+    expect(response.status).to eq(403)
   end
 
   it 'handles a failing post with a 405 response' do
@@ -117,7 +117,7 @@ describe TicketSharing::Client do
 
     client, response = do_request(:post)
     expect(client).to_not be_success
-    expect(response.code).to eq('410')
+    expect(response.status).to eq(410)
   end
 
   it 'handles a failing post with 422 response' do
@@ -127,7 +127,7 @@ describe TicketSharing::Client do
 
     client, response = do_request(:post)
     expect(client).to_not be_success
-    expect(response.code).to eq('422')
+    expect(response.status).to eq(422)
   end
 
   it 'handles a failing post with a 5xx response' do

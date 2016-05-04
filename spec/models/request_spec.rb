@@ -37,7 +37,7 @@ describe TicketSharing::Request do
     expected_request2 = stub_request(:post, 'http://example.com/sharing/1')
 
     response = described_class.new.request(:post, 'http://example.com/sharing', body: 'body')
-    expect(response.code).to eq('200')
+    expect(response.status).to eq(200)
 
     expect(expected_request1).to have_been_requested
     expect(expected_request2).to have_been_requested
@@ -50,7 +50,7 @@ describe TicketSharing::Request do
       .with(headers: { 'X-Foo' => '1' })
 
     response = described_class.new.request(:post, 'http://example.com/sharing', headers: {'X-Foo' => '1'})
-    expect(response.code).to eq('200') # got redirected ?
+    expect(response.status).to eq(200) # got redirected ?
 
     expect(expected_request1).to have_been_requested
     expect(expected_request2).to have_been_requested
@@ -65,9 +65,9 @@ describe TicketSharing::Request do
     expect(expected_request).to have_been_requested
   end
 
-  it 'does not set special verify_mode without option' do
+  it 'set verify_mode to VERIFY_PEER without option' do
     expected_request = stub_request(:post, 'https://example.com/sharing')
-    expect_any_instance_of(Net::HTTP).to receive(:verify_mode=).never
+    expect_any_instance_of(Net::HTTP).to receive(:verify_mode=).with(OpenSSL::SSL::VERIFY_PEER)
 
     described_class.new.request(:post, 'https://example.com/sharing')
 
