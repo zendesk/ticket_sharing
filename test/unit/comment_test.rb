@@ -39,6 +39,7 @@ class TicketSharing::CommentTest < MiniTest::Unit::TestCase
     comment = TicketSharing::Comment.parse(json)
     assert_equal(attributes['uuid'], comment.uuid)
     assert_equal(attributes['body'], comment.body)
+    assert_equal(attributes['html_body'], comment.html_body)
     assert_equal(attributes['authored_at'], comment.authored_at.to_time)
   end
 
@@ -130,6 +131,7 @@ class TicketSharing::CommentTest < MiniTest::Unit::TestCase
     {
       'uuid' => 'comment123',
       'body' => 'I need some help.  In fact, I need a lot of help.',
+      'html_body' => 'I need some help.  In fact, I need a lot of help.',
       'authored_at' => Time.at(Time.now.to_i - 86400)
     }
   end
