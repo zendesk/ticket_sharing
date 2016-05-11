@@ -1,3 +1,4 @@
+require 'ticket_sharing'
 require 'ticket_sharing/error'
 
 module TicketSharing
@@ -6,67 +7,66 @@ module TicketSharing
 
     CA_PATH = "/etc/ssl/certs"
 
+    def initialize(connection = TicketSharing.connection)
+      @connection = connection
+    end
+
     def request(method, url, options = {})
-      request_class = case method
-      when :get    then Net::HTTP::Get
-      when :post   then Net::HTTP::Post
-      when :put    then Net::HTTP::Put
-      when :delete then Net::HTTP::Delete
-      else
-        raise ArgumentError, "Unsupported method: #{method.inspect}"
-      end
+      raise ArgumentError, "Unsupported method: #{method.inspect}" unless %i(get post put delete).include?(method)
 
-      response = send_request(request_class, url, options)
-
-      follow_redirects!(request_class, response, options)
+      response = send_request(method, url, options)
+      follow_redirects!(method, response, options)
     end
 
     private
 
-    def send_request(request_class, url, options)
-      uri = URI.parse(url)
-      request = build_request(request_class, uri, options)
-      send!(request, uri, options)
-    end
+    def send_request(method, url, options)
+      response = nil
 
-    def build_request(request_class, uri, options)
-      request = request_class.new(uri.path)
-      request['Accept'] = 'application/json'
-      request['Content-Type'] = 'application/json'
-
-      (options[:headers] || {}).each do |k, v|
-        request[k] = v
-      end
-
-      request.body = options[:body]
-
-      request
-    end
-
-    def send!(request, uri, options)
-      http = Net::HTTP.new(uri.host, uri.port)
-
-      if uri.scheme == 'https'
-        http.use_ssl = true
-        http.ca_path = CA_PATH if File.exist?(CA_PATH)
-
-        if options[:ssl] && options[:ssl][:verify] == false
-          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      with_ssl_connection(options) do
+        response = @connection.send(method) do |request|
+          configure_request(request, url, options)
         end
       end
 
-      http.start { |http| http.request(request) }
+      response
     end
 
-    def follow_redirects!(request_class, response, options)
+    def with_ssl_connection(options)
+      ssl_config = {}
+      ssl_config[:ca_path] = CA_PATH if File.exist?(CA_PATH)
+      ssl_config[:verify]  = false   if options[:ssl] && options[:ssl][:verify] == false
+
+      old_configuration = @connection.instance_variable_get(:@ssl)
+      @connection.instance_variable_set(:@ssl, ssl_config) unless ssl_config.empty?
+      yield
+    ensure
+      @connection.instance_variable_set(:@ssl, old_configuration)
+    end
+
+    def configure_request(request, url, options)
+      uri = URI.parse(url)
+
+      request.url url
+      {
+        'Accept'       => 'application/json',
+        'Content-Type' => 'application/json'
+      }.merge(options[:headers] || {}).each do |h, v|
+        request.headers[h] = v
+      end
+
+      request.body = options[:body]
+    end
+
+    def follow_redirects!(method, response, options)
       redirects = 0
-      while (300..399).include?(response.code.to_i)
+      while (300..399).include?(response.status)
         if redirects >= MAX_REDIRECTS
           raise TicketSharing::TooManyRedirects
         else
           redirects += 1
         end
-        response = send_request(request_class, response['Location'], options)
+        response = send_request(method, response['Location'], options)
       end
       response
     end

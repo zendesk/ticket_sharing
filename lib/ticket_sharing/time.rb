@@ -16,8 +16,12 @@ module TicketSharing
       end
     end
 
-    def to_json
-      JsonSupport.encode(@value ? @value.strftime('%Y-%m-%d %H:%M:%S %z') : nil)
+    def as_json(_options = {})
+      @value ? @value.strftime('%Y-%m-%d %H:%M:%S %z') : nil
+    end
+
+    def to_json(_options = {})
+      JsonSupport.encode(as_json)
     end
 
     # Support method to play well with active record
