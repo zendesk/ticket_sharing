@@ -7,6 +7,7 @@ describe TicketSharing::Comment do
     {
       'uuid' => 'comment123',
       'body' => 'I need some help.  In fact, I need a lot of help.',
+      'html_body' => '<strong>I need some help</strong>.  In fact, I need a lot of help.',
       'authored_at' => Time.at(Time.now.to_i - 86400)
     }
   end
@@ -47,6 +48,7 @@ describe TicketSharing::Comment do
     comment = described_class.parse(json)
     expect(comment.uuid).to eq(attributes['uuid'])
     expect(comment.body).to eq(attributes['body'])
+    expect(comment.html_body).to eq(attributes['html_body'])
     expect(comment.authored_at.to_time).to eq(attributes['authored_at'])
   end
 
