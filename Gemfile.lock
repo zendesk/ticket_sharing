@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ticket_sharing (2.0.0)
+    ticket_sharing (2.0.1)
 
 GEM
   remote: https://rubygems.org/
@@ -47,6 +47,3 @@ DEPENDENCIES
   rspec
   ticket_sharing!
   webmock
-
-BUNDLED WITH
-   1.11.2
