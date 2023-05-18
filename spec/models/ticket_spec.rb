@@ -131,6 +131,13 @@ describe TicketSharing::Ticket do
     expect(ticket.comments[1].author.name).to eq('Actor One')
   end
 
+  it 'serializes the custom status' do
+    ticket = described_class.new('custom_status' => "custom_status_str")
+    json = ticket.to_json
+    parsed_ticket = described_class.parse(json)
+    expect(parsed_ticket.custom_status).to eq "custom_status_str"
+  end
+
   it 'serializes the custom fields' do
     custom_fields = {
       'foo' => 'bar',
