@@ -45,7 +45,7 @@ PLATFORMS
 DEPENDENCIES
   bump
   byebug
-  faraday (= 1.0.0)
+  faraday (~> 1.0.0)
   rake
   rexml
   rspec
