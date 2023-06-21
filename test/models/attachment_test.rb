@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'test_helper'
 require 'ticket_sharing/attachment'
 
 describe TicketSharing::Attachment do
@@ -11,12 +11,12 @@ describe TicketSharing::Attachment do
       'content_type'     => 'text/jpeg'
     }
 
-    attachment = described_class.new(attributes)
+    attachment = TicketSharing::Attachment.new(attributes)
 
-    expect(attachment.url).to eq('http://example.com/')
-    expect(attachment.filename).to eq('foo.jpg')
-    expect(attachment.display_filename).to eq('foo.jpg')
-    expect(attachment.content_type).to eq('text/jpeg')
+    expect(attachment.url).must_equal('http://example.com/')
+    expect(attachment.filename).must_equal('foo.jpg')
+    expect(attachment.display_filename).must_equal('foo.jpg')
+    expect(attachment.content_type).must_equal('text/jpeg')
   end
 
 end
