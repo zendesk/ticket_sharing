@@ -10,8 +10,8 @@ GEM
       public_suffix (>= 2.0.2, < 5.0)
     bump (0.4.2)
     byebug (8.2.5)
-    crack (0.4.3)
-      safe_yaml (~> 1.0.0)
+    crack (0.4.5)
+      rexml
     diff-lcs (1.2.5)
     faraday (1.0.0)
       multipart-post (>= 1.2, < 3)
@@ -33,7 +33,6 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.4.0)
     rspec-support (3.4.1)
-    safe_yaml (1.0.4)
     webmock (1.22.6)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
@@ -47,7 +46,6 @@ DEPENDENCIES
   byebug
   faraday (~> 1.0.0)
   rake
-  rexml
   rspec
   ticket_sharing!
   webmock
