@@ -27,9 +27,9 @@ describe TicketSharing::Request do
     expected_request = stub_request(:post, 'http://example.com/sharing')
       .and_return(status: 302, headers: { 'Location' => 'http://example.com/sharing' })
 
-    expect {
+    assert_raises TicketSharing::TooManyRedirects do
       described_class.new.request(:post, 'http://example.com/sharing', body: 'body')
-    }.must_raise(TicketSharing::TooManyRedirects)
+    end
 
     assert_request_requested expected_request, times: 3
   end
@@ -40,7 +40,7 @@ describe TicketSharing::Request do
     expected_request2 = stub_request(:post, 'http://example.com/sharing/1')
 
     response = described_class.new.request(:post, 'http://example.com/sharing', body: 'body')
-    expect(response.status).must_equal(200)
+    assert_equal 200, response.status
 
     assert_request_requested expected_request1
     assert_request_requested expected_request2
@@ -53,7 +53,7 @@ describe TicketSharing::Request do
       .with(headers: { 'X-Foo' => '1' })
 
     response = described_class.new.request(:post, 'http://example.com/sharing', headers: {'X-Foo' => '1'})
-    expect(response.status).must_equal(200) # got redirected ?
+    assert_equal 200, response.status # got redirected ?
 
     assert_request_requested expected_request1
     assert_request_requested expected_request2

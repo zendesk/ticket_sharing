@@ -19,9 +19,9 @@ describe TicketSharing::Client do
     expected_request = stub_request(:post, @base_url + @path)
 
     client, response = do_request(:post)
-    expect(client).must_be :success?
-    expect(response).wont_be_nil
-    expect(response.status).must_equal(200)
+    assert_predicate client, :success?
+    refute_nil response
+    assert_equal 200, response.status
 
     assert_request_requested expected_request
   end
@@ -41,8 +41,8 @@ describe TicketSharing::Client do
       .and_return(status: 201)
 
     client, response = do_request(:post)
-    expect(client).must_be :success?
-    expect(response.status).must_equal(201)
+    assert_predicate client, :success?
+    assert_equal 201, response.status
 
     assert_request_requested expected_request
   end
@@ -56,10 +56,10 @@ describe TicketSharing::Client do
       .and_return(body: 'the final url', status: 201)
 
     response = client.post('/', '')
-    expect(response.status).must_equal(201)
-    expect(response.body).must_equal('the final url')
+    assert_equal 201, response.status
+    assert_equal 'the final url', response.body
 
-    expect(client).must_be :success?
+    assert_predicate client, :success?
   end
 
   it 'nots follow_more_than_x_redirects' do
@@ -68,9 +68,7 @@ describe TicketSharing::Client do
     stub_request(:post, 'http://example.com/sharing/')
       .and_return(status: 302, headers: { 'Location' => 'http://example.com/sharing/' })
 
-    expect {
-      client.post('/', '')
-    }.must_raise(TicketSharing::TooManyRedirects)
+    assert_raises TicketSharing::TooManyRedirects do client.post('/', '') end
   end
 
   it 'handles a failing post with 400 response' do
@@ -78,11 +76,9 @@ describe TicketSharing::Client do
     stub_request(:post, @base_url + @path)
       .and_return(body: the_body, status: 400)
 
-    e = expect {
-      do_request(:post)
-    }.must_raise(TicketSharing::Error)
+    e = assert_raises TicketSharing::Error do do_request(:post) end
 
-    expect(e.message).must_equal %Q{400\n\n} + the_body
+    assert_equal %Q{400\n\n} + the_body, e.message
   end
 
   it 'handles a failing post with 403 response' do
@@ -91,8 +87,8 @@ describe TicketSharing::Client do
       .and_return(body: the_body, status: 403)
 
     client, response = do_request(:post)
-    expect(client).wont_be :success?
-    expect(response.status).must_equal(403)
+    refute_predicate client, :success?
+    assert_equal 403, response.status
   end
 
   it 'handles a failing post with a 405 response' do
@@ -101,7 +97,7 @@ describe TicketSharing::Client do
       .and_return(body: the_body, status: 405)
 
     client, _response = do_request(:post)
-    expect(client).wont_be :success?
+    refute_predicate client, :success?
   end
 
   it 'handles a failing post with 404 response' do
@@ -110,7 +106,7 @@ describe TicketSharing::Client do
       .and_return(body: the_body, status: 404)
 
     client, _response = do_request(:post)
-    expect(client).wont_be :success?
+    refute_predicate client, :success?
   end
 
   it 'handles a failing post with 410 response' do
@@ -119,8 +115,8 @@ describe TicketSharing::Client do
       .and_return(body: the_body, status: 410)
 
     client, response = do_request(:post)
-    expect(client).wont_be :success?
-    expect(response.status).must_equal(410)
+    refute_predicate client, :success?
+    assert_equal 410, response.status
   end
 
   it 'handles a failing post with 422 response' do
@@ -129,8 +125,8 @@ describe TicketSharing::Client do
       .and_return(body: the_body, status: 422)
 
     client, response = do_request(:post)
-    expect(client).wont_be :success?
-    expect(response.status).must_equal(422)
+    refute_predicate client, :success?
+    assert_equal 422, response.status
   end
 
   it 'handles a failing post with a 5xx response' do
@@ -139,7 +135,7 @@ describe TicketSharing::Client do
       .and_return(body: the_body, status: 500)
 
     client, _response = do_request(:post)
-    expect(client).wont_be :success?
+    refute_predicate client, :success?
   end
 
   it 'handles a successful post without a token' do
@@ -147,27 +143,27 @@ describe TicketSharing::Client do
       request.headers['X-Ticket-Sharing-Token'] == nil
     end
     client, _response = do_request(:post)
-    expect(client).must_be :success?
+    assert_predicate client, :success?
   end
 
   it 'handles a successful post with auth token' do
     stub_request(:post, @base_url + @path)
       .with(headers: { 'X-Ticket-Sharing-Token' => 'the_token' })
     client, _response = do_request(:post, token: 'the_token')
-    expect(client).must_be :success?
+    assert_predicate client, :success?
   end
 
   it 'handles a successful put' do
     stub_request(:put, 'http://example.com/sharing/')
     client, _response = do_request(:put)
-    expect(client).must_be :success?
+    assert_predicate client, :success?
   end
 
   it 'handles a successful put with auth token' do
     stub_request(:post, 'http://example.com/sharing/')
       .with(headers: { 'X-Ticket-Sharing-Token' => 'the_token' })
     client, _response = do_request(:post, token: 'the_token')
-    expect(client).must_be :success?
+    assert_predicate client, :success?
   end
 
   it 'handles a successful delete' do

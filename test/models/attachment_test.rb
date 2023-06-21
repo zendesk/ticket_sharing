@@ -13,10 +13,10 @@ describe TicketSharing::Attachment do
 
     attachment = TicketSharing::Attachment.new(attributes)
 
-    expect(attachment.url).must_equal('http://example.com/')
-    expect(attachment.filename).must_equal('foo.jpg')
-    expect(attachment.display_filename).must_equal('foo.jpg')
-    expect(attachment.content_type).must_equal('text/jpeg')
+    assert_equal 'http://example.com/', attachment.url
+    assert_equal 'foo.jpg', attachment.filename
+    assert_equal 'foo.jpg', attachment.display_filename
+    assert_equal 'text/jpeg', attachment.content_type
   end
 
 end

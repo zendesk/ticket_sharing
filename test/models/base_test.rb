@@ -10,8 +10,8 @@ describe TicketSharing::Base do
 
     klass2 = Class.new(klass1)
 
-    expect(klass1.new.field_list).must_equal([:foo, :bar])
-    expect(klass2.new.field_list).must_equal([:foo, :bar])
+    assert_equal [:foo, :bar], klass1.new.field_list
+    assert_equal [:foo, :bar], klass2.new.field_list
   end
 
 end

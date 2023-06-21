@@ -18,9 +18,9 @@ describe TicketSharing::Ticket do
 
     ticket = described_class.new(attributes)
 
-    expect(ticket.uuid)   .must_equal(attributes['uuid'])
-    expect(ticket.subject).must_equal(attributes['subject'])
-    expect(ticket.status) .must_equal(attributes['status'])
+    assert_equal attributes['uuid'], ticket.uuid
+    assert_equal attributes['subject'], ticket.subject
+    assert_equal attributes['status'], ticket.status
   end
 
   it 'parses json' do
@@ -32,11 +32,11 @@ describe TicketSharing::Ticket do
     json = TicketSharing::JsonSupport.encode(attributes)
     ticket = described_class.parse(json)
 
-    expect(ticket.uuid)       .must_equal(attributes['uuid'])
-    expect(ticket.subject)    .must_equal(attributes['subject'])
-    expect(ticket.status)     .must_equal(attributes['status'])
-    expect(ticket.tags)       .must_equal(attributes['tags'])
-    expect(ticket.original_id).must_equal(attributes['original_id'])
+    assert_equal attributes['uuid'], ticket.uuid
+    assert_equal attributes['subject'], ticket.subject
+    assert_equal attributes['status'], ticket.status
+    assert_equal attributes['tags'], ticket.tags
+    assert_equal attributes['original_id'], ticket.original_id
   end
 
   it 'serializes to json' do
@@ -51,12 +51,12 @@ describe TicketSharing::Ticket do
     json = ticket.to_json
 
     parsed_from_json = TicketSharing::JsonSupport.decode(json)
-    expect(parsed_from_json['subject'])     .must_equal(ticket.subject)
-    expect(parsed_from_json['status'])      .must_equal(ticket.status)
-    expect(parsed_from_json['uuid'])        .must_equal(ticket.uuid)
-    expect(parsed_from_json['requested_at']).must_equal(requested_at.strftime('%Y-%m-%d %H:%M:%S %z'))
-    expect(parsed_from_json['tags'])        .must_equal(ticket.tags)
-    expect(parsed_from_json['original_id']) .must_equal(ticket.original_id)
+    assert_equal ticket.subject, parsed_from_json['subject']
+    assert_equal ticket.status, parsed_from_json['status']
+    assert_equal ticket.uuid, parsed_from_json['uuid']
+    assert_equal requested_at.strftime('%Y-%m-%d %H:%M:%S %z'), parsed_from_json['requested_at']
+    assert_equal ticket.tags, parsed_from_json['tags']
+    assert_equal ticket.original_id, parsed_from_json['original_id']
   end
 
   it 'serializes comments to json' do
@@ -69,11 +69,11 @@ describe TicketSharing::Ticket do
     ticket.comments.last.author = TicketSharing::Actor.new('uuid' => 'Actor2', 'name' => 'Actor Two')
 
     json = ticket.to_json
-    expect(json).must_match(/Comment1.*Comment2/)
-    expect(json).must_match(/Actor One.*Actor Two/)
+    assert_match(/Comment1.*Comment2/, json)
+    assert_match(/Actor One.*Actor Two/, json)
     parsed_from_json = TicketSharing::JsonSupport.decode(json)
 
-    expect(parsed_from_json['comments'].size).must_equal(2)
+    assert_equal 2, parsed_from_json['comments'].size
   end
 
   it 'includes requested in json serialization if present' do
@@ -83,7 +83,7 @@ describe TicketSharing::Ticket do
     json = ticket.to_json
     hash = TicketSharing::JsonSupport.decode(json)
 
-    expect(hash['requester']['name']).must_equal('actor name')
+    assert_equal 'actor name', hash['requester']['name']
   end
 
   it 'deserializes the requester' do
@@ -96,8 +96,8 @@ describe TicketSharing::Ticket do
     json = TicketSharing::JsonSupport.encode(hash)
     ticket = described_class.parse(json)
 
-    expect(ticket.requester).must_be_kind_of(TicketSharing::Actor)
-    expect(ticket.requester.name).must_equal('requester name')
+    assert_kind_of TicketSharing::Actor, ticket.requester
+    assert_equal 'requester name', ticket.requester.name
   end
 
   it 'deserialize the current actor' do
@@ -110,8 +110,8 @@ describe TicketSharing::Ticket do
     json = TicketSharing::JsonSupport.encode(hash)
     ticket = described_class.parse(json)
 
-    expect(ticket.current_actor).must_be_kind_of(TicketSharing::Actor)
-    expect(ticket.current_actor.name).must_equal('current actor')
+    assert_kind_of TicketSharing::Actor, ticket.current_actor
+    assert_equal 'current actor', ticket.current_actor.name
   end
 
   it 'deserializes the comments' do
@@ -123,20 +123,20 @@ describe TicketSharing::Ticket do
     json = TicketSharing::JsonSupport.encode(hash)
     ticket = described_class.parse(json)
 
-    expect(ticket.comments[0]).must_be_kind_of(TicketSharing::Comment)
-    expect(ticket.comments[0].body).must_equal('comment 0')
-    expect(ticket.comments[0].author.name).must_equal('Actor Zero')
+    assert_kind_of TicketSharing::Comment, ticket.comments[0]
+    assert_equal 'comment 0', ticket.comments[0].body
+    assert_equal 'Actor Zero', ticket.comments[0].author.name
 
-    expect(ticket.comments[1]).must_be_kind_of(TicketSharing::Comment)
-    expect(ticket.comments[1].body).must_equal('comment 1')
-    expect(ticket.comments[1].author.name).must_equal('Actor One')
+    assert_kind_of TicketSharing::Comment, ticket.comments[1]
+    assert_equal 'comment 1', ticket.comments[1].body
+    assert_equal 'Actor One', ticket.comments[1].author.name
   end
 
   it 'serializes the custom status' do
     ticket = described_class.new('custom_status' => "custom_status_str")
     json = ticket.to_json
     parsed_ticket = described_class.parse(json)
-    expect(parsed_ticket.custom_status).must_equal "custom_status_str"
+    assert_equal "custom_status_str", parsed_ticket.custom_status
   end
 
   it 'serializes the custom fields' do
@@ -151,10 +151,10 @@ describe TicketSharing::Ticket do
     json = ticket.to_json
     parsed_ticket = described_class.parse(json)
 
-    expect(parsed_ticket.custom_fields['foo']).must_equal('bar')
-    expect(parsed_ticket.custom_fields['one']).must_equal(2)
-    expect(parsed_ticket.custom_fields['three']).must_equal([4, 5, 6])
-    expect(parsed_ticket.custom_fields['hash']).must_equal('key' => 'value')
+    assert_equal 'bar', parsed_ticket.custom_fields['foo']
+    assert_equal 2, parsed_ticket.custom_fields['one']
+    assert_equal [4, 5, 6], parsed_ticket.custom_fields['three']
+    assert_equal({ 'key' => 'value' }, parsed_ticket.custom_fields['hash'])
   end
 
   it 'sends to partner' do
@@ -167,7 +167,7 @@ describe TicketSharing::Ticket do
       request.headers['X-Ticket-Sharing-Token'] == ticket.agreement.authentication_token
     end
 
-    expect(!!ticket.send_to('http://example.com/sharing')).must_equal true
+    assert_equal true, !!ticket.send_to('http://example.com/sharing')
 
     assert_request_requested expected_request
   end
@@ -181,7 +181,7 @@ describe TicketSharing::Ticket do
       'uuid' => 'a1', 'access_key' => 'key'
     )
 
-    expect(!!ticket.update_partner('http://example.com/sharing')).must_equal true
+    assert_equal true, !!ticket.update_partner('http://example.com/sharing')
 
     assert_request_requested expected_request
   end
@@ -195,19 +195,19 @@ describe TicketSharing::Ticket do
       'uuid' => 'a1', 'access_key' => 'key'
     )
 
-    expect(!!ticket.unshare('http://example.com/sharing')).must_equal true
+    assert_equal true, !!ticket.unshare('http://example.com/sharing')
 
     assert_request_requested expected_request
   end
 
   it 'sets requested_at from string' do
     ticket = described_class.new('requested_at' => '2011-01-02 13:01:01 -0500')
-    expect(ticket.requested_at.to_time).must_equal(Time.parse('2011-01-02 13:01:01 -0500'))
+    assert_equal Time.parse('2011-01-02 13:01:01 -0500'), ticket.requested_at.to_time
   end
 
   it 'sets requested_at from time' do
     time = Time.now
     ticket = described_class.new('requested_at' => time)
-    expect(ticket.requested_at.to_time).must_equal(time)
+    assert_equal time, ticket.requested_at.to_time
   end
 end

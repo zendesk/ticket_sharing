@@ -16,12 +16,12 @@ describe TicketSharing::Agreement do
 
     agreement = described_class.new(attributes)
 
-    expect(agreement.receiver_url)          .must_equal(attributes['receiver_url'])
-    expect(agreement.sender_url)            .must_equal(attributes['sender_url'])
-    expect(agreement.status)                .must_equal(attributes['status'])
-    expect(agreement.sync_tags)             .must_equal(attributes['sync_tags'])
-    expect(agreement.sync_custom_fields)    .must_equal(attributes['sync_custom_fields'])
-    expect(agreement.allows_public_comments).must_equal(attributes['allows_public_comments'])
+    assert_equal attributes['receiver_url'], agreement.receiver_url
+    assert_equal attributes['sender_url'], agreement.sender_url
+    assert_equal attributes['status'], agreement.status
+    assert_equal attributes['sync_tags'], agreement.sync_tags
+    assert_equal attributes['sync_custom_fields'], agreement.sync_custom_fields
+    assert_equal attributes['allows_public_comments'], agreement.allows_public_comments
   end
 
   it 'generates a authentication token' do
@@ -30,7 +30,7 @@ describe TicketSharing::Agreement do
       'access_key' => '<access_key>'
     }
     agreement = described_class.new(attributes)
-    expect(agreement.authentication_token).must_equal("<uuid>:<access_key>")
+    assert_equal "<uuid>:<access_key>", agreement.authentication_token
   end
 
   it 'marshals from json' do
@@ -46,13 +46,13 @@ describe TicketSharing::Agreement do
 
     agreement = described_class.parse(json)
 
-    expect(agreement.name)                  .must_equal('Organization Foo')
-    expect(agreement.uuid)                  .must_equal('the_uuid')
-    expect(agreement.access_key)            .must_equal('the_access_key')
-    expect(agreement.receiver_url)          .must_equal('http://example.com/sharing')
-    expect(agreement.sender_url)            .must_equal('http://example.net/partners')
-    expect(agreement.status)                .must_equal('pending')
-    expect(agreement.allows_public_comments).must_equal(true)
+    assert_equal 'Organization Foo', agreement.name
+    assert_equal 'the_uuid', agreement.uuid
+    assert_equal 'the_access_key', agreement.access_key
+    assert_equal 'http://example.com/sharing', agreement.receiver_url
+    assert_equal 'http://example.net/partners', agreement.sender_url
+    assert_equal 'pending', agreement.status
+    assert_equal true, agreement.allows_public_comments
   end
 
   def test_json_serialization
@@ -75,10 +75,10 @@ describe TicketSharing::Agreement do
     json = agreement.to_json
     agreement2 = described_class.parse(json)
 
-    expect(agreement2.name)        .must_equal(agreement.name)
-    expect(agreement2.receiver_url).must_equal(agreement.receiver_url)
-    expect(agreement2.sender_url)  .must_equal(agreement.sender_url)
-    expect(agreement2.status)      .must_equal(agreement.status)
+    assert_equal agreement.name, agreement2.name
+    assert_equal agreement.receiver_url, agreement2.receiver_url
+    assert_equal agreement.sender_url, agreement2.sender_url
+    assert_equal agreement.status, agreement2.status
   end
 
   it 'sends to partner' do
@@ -90,7 +90,7 @@ describe TicketSharing::Agreement do
     agreement = described_class.new(attributes)
     stub_request(:post, 'http://example.com/sharing/agreements/5ad614f4')
 
-    expect(!!agreement.send_to(attributes['receiver_url'])).must_equal true
+    assert_equal true, !!agreement.send_to(attributes['receiver_url'])
   end
 
   it 'raises when unable to send to partner' do
@@ -103,9 +103,7 @@ describe TicketSharing::Agreement do
     stub_request(:post, 'http://example.com/sharing/agreements/5ad614f4')
       .to_return(status: 400)
 
-    expect {
-      agreement.send_to(attributes['receiver_url'])
-    }.must_raise(TicketSharing::Error)
+    assert_raises TicketSharing::Error do agreement.send_to(attributes['receiver_url']) end
   end
 
   it 'updates partner' do
@@ -119,7 +117,7 @@ describe TicketSharing::Agreement do
     }
 
     agreement = described_class.new(attributes)
-    expect(!!agreement.update_partner(attributes['receiver_url'])).must_equal true
+    assert_equal true, !!agreement.update_partner(attributes['receiver_url'])
   end
 
   it 'deserializes current actor' do
@@ -131,9 +129,9 @@ describe TicketSharing::Agreement do
     )
 
     agreement = described_class.parse(json)
-    expect(agreement.current_actor).wont_be_nil
-    expect(agreement.current_actor.uuid).must_equal('1234')
-    expect(agreement.current_actor.name).must_equal('Remote Dude')
+    refute_nil agreement.current_actor
+    assert_equal '1234', agreement.current_actor.uuid
+    assert_equal 'Remote Dude', agreement.current_actor.name
   end
 
 end
