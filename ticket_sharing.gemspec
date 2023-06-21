@@ -17,5 +17,5 @@ Gem::Specification.new 'ticket_sharing', '2.1.0' do |s|
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'minitest'
   s.add_development_dependency 'mocha'
-  s.add_development_dependency 'faraday', '~> 1.0.0'
+  s.add_development_dependency 'faraday', '~> 1.0'
 end
