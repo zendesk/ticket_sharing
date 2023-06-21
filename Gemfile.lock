@@ -16,6 +16,9 @@ GEM
     faraday (1.0.0)
       multipart-post (>= 1.2, < 3)
     hashdiff (0.2.3)
+    minitest (5.18.1)
+    mocha (2.0.4)
+      ruby2_keywords (>= 0.0.5)
     multipart-post (2.3.0)
     public_suffix (3.1.1)
     rake (13.0.6)
@@ -33,6 +36,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.4.0)
     rspec-support (3.4.1)
+    ruby2_keywords (0.0.5)
     webmock (1.22.6)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
@@ -45,6 +49,8 @@ DEPENDENCIES
   bump
   byebug
   faraday (~> 1.0.0)
+  minitest
+  mocha
   rake
   rspec
   ticket_sharing!
