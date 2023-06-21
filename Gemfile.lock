@@ -12,7 +12,6 @@ GEM
     byebug (8.2.5)
     crack (0.4.5)
       rexml
-    diff-lcs (1.2.5)
     faraday (1.10.3)
       faraday-em_http (~> 1.0)
       faraday-em_synchrony (~> 1.0)
@@ -44,19 +43,6 @@ GEM
     public_suffix (3.1.1)
     rake (13.0.6)
     rexml (3.2.5)
-    rspec (3.4.0)
-      rspec-core (~> 3.4.0)
-      rspec-expectations (~> 3.4.0)
-      rspec-mocks (~> 3.4.0)
-    rspec-core (3.4.4)
-      rspec-support (~> 3.4.0)
-    rspec-expectations (3.4.0)
-      diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.4.0)
-    rspec-mocks (3.4.1)
-      diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.4.0)
-    rspec-support (3.4.1)
     ruby2_keywords (0.0.5)
     webmock (3.18.1)
       addressable (>= 2.8.0)
@@ -73,7 +59,6 @@ DEPENDENCIES
   minitest
   mocha
   rake
-  rspec
   ticket_sharing!
   webmock
 
