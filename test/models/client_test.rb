@@ -69,7 +69,7 @@ describe TicketSharing::Client do
       .and_return(status: 302, headers: { 'Location' => 'http://example.com/sharing/' })
 
     expect {
-      response = client.post('/', '')
+      client.post('/', '')
     }.must_raise(TicketSharing::TooManyRedirects)
   end
 
@@ -79,7 +79,7 @@ describe TicketSharing::Client do
       .and_return(body: the_body, status: 400)
 
     e = expect {
-      client, response = do_request(:post)
+      do_request(:post)
     }.must_raise(TicketSharing::Error)
 
     expect(e.message).must_equal %Q{400\n\n} + the_body
@@ -100,7 +100,7 @@ describe TicketSharing::Client do
     stub_request(:post, @base_url + @path)
       .and_return(body: the_body, status: 405)
 
-    client, response = do_request(:post)
+    client, _response = do_request(:post)
     expect(client).wont_be :success?
   end
 
@@ -109,7 +109,7 @@ describe TicketSharing::Client do
     stub_request(:post, @base_url + @path)
       .and_return(body: the_body, status: 404)
 
-    client, response = do_request(:post)
+    client, _response = do_request(:post)
     expect(client).wont_be :success?
   end
 
@@ -138,35 +138,35 @@ describe TicketSharing::Client do
     stub_request(:post, @base_url + @path)
       .and_return(body: the_body, status: 500)
 
-    client, response = do_request(:post)
+    client, _response = do_request(:post)
     expect(client).wont_be :success?
   end
 
   it 'handles a successful post without a token' do
-    expected_request = stub_request(:post, @base_url + @path).with do |request|
+    stub_request(:post, @base_url + @path).with do |request|
       request.headers['X-Ticket-Sharing-Token'] == nil
     end
-    client, response = do_request(:post)
+    client, _response = do_request(:post)
     expect(client).must_be :success?
   end
 
   it 'handles a successful post with auth token' do
     stub_request(:post, @base_url + @path)
       .with(headers: { 'X-Ticket-Sharing-Token' => 'the_token' })
-    client, response = do_request(:post, token: 'the_token')
+    client, _response = do_request(:post, token: 'the_token')
     expect(client).must_be :success?
   end
 
   it 'handles a successful put' do
     stub_request(:put, 'http://example.com/sharing/')
-    client, response = do_request(:put)
+    client, _response = do_request(:put)
     expect(client).must_be :success?
   end
 
   it 'handles a successful put with auth token' do
     stub_request(:post, 'http://example.com/sharing/')
       .with(headers: { 'X-Ticket-Sharing-Token' => 'the_token' })
-    client, response = do_request(:post, token: 'the_token')
+    client, _response = do_request(:post, token: 'the_token')
     expect(client).must_be :success?
   end
 

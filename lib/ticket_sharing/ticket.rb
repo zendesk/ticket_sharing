@@ -34,10 +34,12 @@ module TicketSharing
     end
 
     # TSTODO make all of these setters behave this way, not like they do in parse
+    alias _ requested_at=
     def requested_at=(val)
       @requested_at = TicketSharing::Time.new(val)
     end
 
+    alias _ comments
     def comments
       @comments ||= []
     end

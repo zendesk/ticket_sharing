@@ -5,7 +5,7 @@ module TicketSharing
 
     def self.fields(*args)
       @fields = args
-      attr_accessor *args
+      attr_accessor(*args)
     end
 
     def self.field_list

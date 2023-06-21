@@ -45,7 +45,7 @@ module TicketSharing
     end
 
     def configure_request(request, url, options)
-      uri = URI.parse(url)
+      _uri = URI.parse(url)
 
       request.url url
       {

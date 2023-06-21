@@ -23,10 +23,12 @@ module TicketSharing
       new(attributes)
     end
 
+    alias _ authored_at=
     def authored_at=(value)
       @authored_at = TicketSharing::Time.new(value)
     end
 
+    alias _ attachments=
     def attachments=(attachments)
       @attachments = attachments && attachments.map do |attachment|
         attachment.is_a?(Attachment) ? attachment : Attachment.new(attachment)
