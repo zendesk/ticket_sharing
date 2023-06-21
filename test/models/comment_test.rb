@@ -1,7 +1,8 @@
-require 'spec_helper'
+require 'test_helper'
 require 'ticket_sharing/comment'
 
 describe TicketSharing::Comment do
+  let(:described_class) { TicketSharing::Comment }
 
   let(:valid_comment_attributes) do
     {
@@ -15,7 +16,7 @@ describe TicketSharing::Comment do
   it 'initializes from a hash' do
     hash = { 'uuid' => '63f127' }
     comment = described_class.new(hash)
-    expect(comment.uuid).to eq('63f127')
+    expect(comment.uuid).must_equal('63f127')
   end
 
   it 'serializes author' do
@@ -25,8 +26,8 @@ describe TicketSharing::Comment do
     json = comment.to_json
     hash = TicketSharing::JsonSupport.decode(json)
 
-    expect(hash['author']['name']).to eq('The Actor')
-    expect(hash['author']['uuid']).to eq('Actor123')
+    expect(hash['author']['name']).must_equal('The Actor')
+    expect(hash['author']['uuid']).must_equal('Actor123')
   end
 
   it 'serializes attachments' do
@@ -38,7 +39,7 @@ describe TicketSharing::Comment do
 
     # Convert the json back to a hash just for easier assertions
     hash = TicketSharing::JsonSupport.decode(json)
-    expect(hash['attachments'].first['url']).to eq('http://example.com/')
+    expect(hash['attachments'].first['url']).must_equal('http://example.com/')
   end
 
   it 'parses from_json' do
@@ -46,10 +47,10 @@ describe TicketSharing::Comment do
     json = TicketSharing::JsonSupport.encode(attributes)
 
     comment = described_class.parse(json)
-    expect(comment.uuid).to eq(attributes['uuid'])
-    expect(comment.body).to eq(attributes['body'])
-    expect(comment.html_body).to eq(attributes['html_body'])
-    expect(comment.authored_at.to_time).to eq(attributes['authored_at'])
+    expect(comment.uuid).must_equal(attributes['uuid'])
+    expect(comment.body).must_equal(attributes['body'])
+    expect(comment.html_body).must_equal(attributes['html_body'])
+    expect(comment.authored_at.to_time).must_equal(attributes['authored_at'])
   end
 
   it 'parses author_from_json' do
@@ -62,8 +63,8 @@ describe TicketSharing::Comment do
     json = TicketSharing::JsonSupport.encode(attributes)
     comment = described_class.parse(json)
 
-    expect(comment.author.uuid).to eq('Actor123')
-    expect(comment.author.name).to eq('The Actor')
+    expect(comment.author.uuid).must_equal('Actor123')
+    expect(comment.author.name).must_equal('The Actor')
   end
 
   it 'parses attachments_from_json' do
@@ -71,30 +72,30 @@ describe TicketSharing::Comment do
     json = TicketSharing::JsonSupport.encode(hash)
 
     parsed_comment = described_class.parse(json)
-    expect(parsed_comment.attachments.first.url).to eq('http://example.com/foo.jpg')
+    expect(parsed_comment.attachments.first.url).must_equal('http://example.com/foo.jpg')
   end
 
   it 'parses should not blow up when there are no attachments' do
     json = TicketSharing::JsonSupport.encode('attachments' => nil)
-    expect(described_class.parse(json)).to_not be_nil
+    expect(described_class.parse(json)).wont_be_nil
   end
 
   it 'creates a comment that does not specify its publicity should be public' do
     comment = described_class.new
-    expect(comment).to be_public
+    expect(comment).must_be :public?
   end
 
   it 'creates a comment explicitly set to private should not be public' do
     comment = described_class.new(
       'public' => false
     )
-    expect(comment).to_not be_public
+    expect(comment).wont_be :public?
   end
 
   it 'stores authored at' do
     now = Time.now
     comment = described_class.new('authored_at' => now)
-    expect(comment.authored_at.to_time).to eq(now)
+    expect(comment.authored_at.to_time).must_equal(now)
   end
 
   it 'serializes custom_fields' do
@@ -115,13 +116,13 @@ describe TicketSharing::Comment do
     # Convert the json back to a hash just for easier assertions
     hash = TicketSharing::JsonSupport.decode(json)
 
-    expect(hash['custom_fields']['foo'])  .to eq('bar')
-    expect(hash['custom_fields']['one'])  .to eq(2)
-    expect(hash['custom_fields']['three']).to eq([4, 5, 6])
-    expect(hash['custom_fields']['hash']) .to eq('key' => 'value')
+    expect(hash['custom_fields']['foo'])  .must_equal('bar')
+    expect(hash['custom_fields']['one'])  .must_equal(2)
+    expect(hash['custom_fields']['three']).must_equal([4, 5, 6])
+    expect(hash['custom_fields']['hash']) .must_equal('key' => 'value')
 
-    expect(hash['custom_fields']['array'].first['url']).to eq("http://foo.bar/resources/1")
-    expect(hash['custom_fields']['array'].last['id'])  .to eq("efg")
+    expect(hash['custom_fields']['array'].first['url']).must_equal("http://foo.bar/resources/1")
+    expect(hash['custom_fields']['array'].last['id'])  .must_equal("efg")
   end
 
   it 'parses custom_fields_from_json' do
@@ -137,7 +138,7 @@ describe TicketSharing::Comment do
 
     parsed_comment = described_class.parse(json)
 
-    expect(parsed_comment.custom_fields['array'].first['url']).to eq("http://foo.bar/resources/1")
-    expect(parsed_comment.custom_fields['three']).to eq([4, 5, 6])
+    expect(parsed_comment.custom_fields['array'].first['url']).must_equal("http://foo.bar/resources/1")
+    expect(parsed_comment.custom_fields['three']).must_equal([4, 5, 6])
   end
 end
