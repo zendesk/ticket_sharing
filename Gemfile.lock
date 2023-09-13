@@ -1,14 +1,13 @@
 PATH
   remote: .
   specs:
-    ticket_sharing (2.0.1)
+    ticket_sharing (2.1.0)
 
 GEM
   remote: https://rubygems.org/
   specs:
     addressable (2.8.0)
       public_suffix (>= 2.0.2, < 5.0)
-    bump (0.4.2)
     byebug (8.2.5)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
@@ -43,7 +42,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  bump
   byebug
   faraday (~> 1.0.0)
   rake
