@@ -1,4 +1,4 @@
-# Ticket Sharing [![Build Status](https://secure.travis-ci.org/zendesk/ticket_sharing.png)](http://travis-ci.org/zendesk/ticket_sharing)
+# Ticket Sharing [![Build Status](https://github.com/zendesk/ticket_sharing/actions/workflows/ruby.yml/badge.svg)](https://github.com/zendesk/ticket_sharing/actions/workflows/ruby.yml)
 
 A ruby implementation of the [Networked Help Desk] [1] API
 

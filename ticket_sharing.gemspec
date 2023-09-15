@@ -1,4 +1,7 @@
-Gem::Specification.new 'ticket_sharing', '2.1.0' do |s|
+require './lib/ticket_sharing/version'
+
+Gem::Specification.new 'ticket_sharing' do |s|
+  s.version = TicketSharing::VERSION
   s.authors = ['Josh Lubaway']
   s.email = 'josh@zendesk.com'
   s.extra_rdoc_files = ['Readme.md']
@@ -12,7 +15,6 @@ Gem::Specification.new 'ticket_sharing', '2.1.0' do |s|
   s.required_ruby_version = '>= 2.1.0'
 
   s.add_development_dependency 'rake'
-  s.add_development_dependency 'bump'
   s.add_development_dependency 'webmock'
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'faraday', '~> 1.0.0'
