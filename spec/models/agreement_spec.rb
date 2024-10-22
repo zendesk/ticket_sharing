@@ -102,9 +102,7 @@ describe TicketSharing::Agreement do
     stub_request(:post, 'http://example.com/sharing/agreements/5ad614f4')
       .to_return(status: 400)
 
-    expect {
-      agreement.send_to(attributes['receiver_url'])
-    }.to raise_error(TicketSharing::Error)
+    expect(agreement.send_to(attributes['receiver_url'])).to be(400)
   end
 
   it 'updates partner' do

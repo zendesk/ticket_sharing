@@ -77,9 +77,8 @@ describe TicketSharing::Client do
     stub_request(:post, @base_url + @path)
       .and_return(body: the_body, status: 400)
 
-    expect {
-      client, response = do_request(:post)
-    }.to raise_error(TicketSharing::Error, %Q{400\n\n} + the_body)
+    client, response = do_request(:post)
+    expect(response.status).to be(400)
   end
 
   it 'handles a failing post with 403 response' do

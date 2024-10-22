@@ -41,7 +41,7 @@ module TicketSharing
       @success = case response.status
       when (200..299)
         true
-      when 401, 403, 404, 405, 408, 410, 422, 500..599
+      when 400, 401, 403, 404, 405, 408, 410, 422, 500..599
         false
       else
         raise TicketSharing::Error.new(%Q{#{response.status}\n\n#{response.body}})
