@@ -33,8 +33,20 @@ A ruby implementation of the [Networked Help Desk] [1] API
 * [Submit an issue] [2]
 * Fork the project and submit a pull request
 
-[1]: http://networkedhelpdesk.org/api/ "Networked Help Desk"
-[2]: https://github.com/zendesk/ticket_sharing/issues "Issues"
+### Releasing a new version
+A new version is published to RubyGems.org every time a change to `version.rb` is pushed to the `main` branch.
+In short, follow these steps:
+1. Update `version.rb`,
+2. run `bundle lock` to update `Gemfile.lock`,
+3. merge this change into `main`, and
+4. look at [the action](https://github.com/zendesk/ticket_sharing/actions/workflows/publish.yml) for output.
+
+To create a pre-release from a non-main branch:
+1. change the version in `version.rb` to something like `1.2.0.pre.1` or `2.0.0.beta.2`,
+2. push this change to your branch,
+3. go to [Actions → “Publish to RubyGems.org” on GitHub](https://github.com/zendesk/ticket_sharing/actions/workflows/publish.yml),
+4. click the “Run workflow” button,
+5. pick your branch from a dropdown.
 
 ## Author
 [Josh Lubaway](https://github.com/jish)<br/>
@@ -51,3 +63,6 @@ http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed
 on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific
 language governing permissions and limitations under the License.
+
+[1]: http://networkedhelpdesk.org/api/ "Networked Help Desk"
+[2]: https://github.com/zendesk/ticket_sharing/issues "Issues"
