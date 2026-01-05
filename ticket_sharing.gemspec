@@ -18,5 +18,5 @@ Gem::Specification.new 'ticket_sharing' do |s|
   s.add_development_dependency 'webmock'
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'faraday', '~> 1.0.0'
-  s.add_development_dependency 'rexml'
+  s.add_development_dependency 'rexml', '>= 3.4.2'
 end
