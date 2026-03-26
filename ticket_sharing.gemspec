@@ -12,11 +12,12 @@ Gem::Specification.new 'ticket_sharing' do |s|
   s.homepage = 'https://github.com/zendesk/ticket_sharing'
   s.license = 'Apache License Version 2.0'
 
-  s.required_ruby_version = '>= 2.4.0'
+  s.required_ruby_version = '>= 2.5.0'
+
+  s.add_dependency 'faraday', '~> 2.0.0'
 
   s.add_development_dependency 'rake'
-  s.add_development_dependency 'webmock'
+  s.add_development_dependency 'webmock', '~> 3.0.0'
   s.add_development_dependency 'rspec'
-  s.add_development_dependency 'faraday', '~> 1.0.0'
   s.add_development_dependency 'rexml', '>= 3.4.2'
 end
