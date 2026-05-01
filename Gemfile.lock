@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ticket_sharing (2.2.0)
+    ticket_sharing (2.2.1)
       faraday (>= 2.14.1)
 
 GEM
