@@ -4,6 +4,7 @@ require 'ticket_sharing/error'
 module TicketSharing
   class Request
     MAX_REDIRECTS = 2
+    USER_AGENT = 'Zendesk-TicketSharing'
 
     CA_PATH = "/etc/ssl/certs"
 
@@ -50,7 +51,8 @@ module TicketSharing
       request.url url
       {
         'Accept'       => 'application/json',
-        'Content-Type' => 'application/json'
+        'Content-Type' => 'application/json',
+        'User-Agent'   => USER_AGENT
       }.merge(options[:headers] || {}).each do |h, v|
         request.headers[h] = v
       end
